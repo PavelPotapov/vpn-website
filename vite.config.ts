@@ -4,7 +4,7 @@ import path from 'path';
 import { reactRouter } from '@react-router/dev/vite';
 import svgr from '@svgr/rollup';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig, type PluginOption } from 'vite';
+import { defineConfig } from 'vite';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
