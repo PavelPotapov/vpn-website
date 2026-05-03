@@ -1,0 +1,64 @@
+# Taskfile — task runner для VPN Website
+# Документация: https://taskfile.dev
+# Запуск: npx task <имя-задачи>
+# Список задач: npx task --list
+
+version: '3'
+
+tasks:
+
+  # ────────────────────────────────────────────────
+  #  Dev & Build
+  # ────────────────────────────────────────────────
+
+  dev:
+    desc: "Dev-сервер"
+    cmd: pnpm dev
+
+  build:
+    desc: "Production build"
+    cmd: pnpm build
+
+  preview:
+    desc: "Build + запуск production сервера"
+    cmd: pnpm build && pnpm start
+
+  # ────────────────────────────────────────────────
+  #  Quality — lint, format, typecheck
+  # ────────────────────────────────────────────────
+
+  lint:
+    desc: "ESLint проверка"
+    cmd: npx eslint .
+
+  lint:fix:
+    desc: "ESLint автофикс"
+    cmd: npx eslint . --fix
+
+  format:
+    desc: "Prettier форматирование"
+    cmd: npx prettier --write "src/**/*.{ts,tsx,json,css,md}"
+
+  format:check:
+    desc: "Prettier проверка"
+    cmd: npx prettier --check "src/**/*.{ts,tsx,json,css,md}"
+
+  typecheck:
+    desc: "TypeScript проверка типов"
+    cmd: npx react-router typegen && npx tsc -b
+
+  check:
+    desc: "Все проверки (lint + typecheck + format) параллельно"
+    deps: [lint, typecheck, format:check]
+
+  # ────────────────────────────────────────────────
+  #  Unit-тесты (Vitest)
+  # ────────────────────────────────────────────────
+
+  test:
+    desc: "Все unit-тесты"
+    cmd: npx vitest run
+
+  test:watch:
+    desc: "Unit-тесты в watch-режиме"
+    cmd: npx vitest

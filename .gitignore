@@ -1,0 +1,14 @@
+node_modules/
+build/
+dist/
+.react-router/
+
+*.local
+.env
+.env.*
+!.env.example
+
+*.tsbuildinfo
+
+.DS_Store
+Thumbs.db

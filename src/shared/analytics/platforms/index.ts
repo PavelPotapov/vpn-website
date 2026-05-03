@@ -1,0 +1,1 @@
+export { GTMPlatform } from './gtm';
