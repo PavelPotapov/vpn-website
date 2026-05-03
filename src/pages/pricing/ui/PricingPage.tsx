@@ -5,7 +5,7 @@ import { AccordionItem } from '@/shared/ui/accordion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from '@/shared/ui/animate-on-scroll';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
+import { NeonCard } from '@/shared/ui/neon-card';
 
 export const PricingPage = () => {
   return (
@@ -76,16 +76,9 @@ function PlanCards() {
     <section className="py-16 md:py-20">
       <StaggerContainer className="mx-auto grid max-w-5xl gap-6 px-6 md:grid-cols-3" stagger={0.12}>
         {plans.map(({ name, period, price, devices, total, tag, highlight }) => (
-          <StaggerItem key={name} preset="scale-in">
-            <Card
-              key={name}
-              className={`relative border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
-                highlight
-                  ? 'border-primary/30 shadow-primary/5 shadow-lg'
-                  : 'border-border/50 shadow-sm'
-              }`}
-            >
-              <CardContent className="flex flex-col p-6 md:p-8">
+          <StaggerItem key={name} preset="scale-in" className="h-full">
+            <NeonCard glowColor={highlight ? '#3B9BF5' : '#5AC8D8'} className="rounded-2xl">
+              <div className="flex h-full flex-col p-6 md:p-8">
                 {tag && (
                   <Badge
                     variant={highlight ? 'default' : 'secondary'}
@@ -121,8 +114,8 @@ function PlanCards() {
                 >
                   {t('pricing.choosePlan')}
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </NeonCard>
           </StaggerItem>
         ))}
       </StaggerContainer>

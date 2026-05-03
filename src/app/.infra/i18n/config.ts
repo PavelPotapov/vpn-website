@@ -9,7 +9,14 @@ import ruCommon from './locales/ru/common.json';
 const getInitialLanguage = (): string => {
   if (typeof window !== 'undefined') {
     const urlLang = extractLanguageFromPath(window.location.pathname);
-    return urlLang && SUPPORTED_LANGUAGE_CODES.includes(urlLang) ? urlLang : 'en';
+    if (urlLang && SUPPORTED_LANGUAGE_CODES.includes(urlLang)) return urlLang;
+    try {
+      const stored = localStorage.getItem('vpn-lang');
+      if (stored && SUPPORTED_LANGUAGE_CODES.includes(stored)) return stored;
+    } catch (_) {
+      /* storage unavailable */
+    }
+    return 'en';
   }
   return 'en';
 };

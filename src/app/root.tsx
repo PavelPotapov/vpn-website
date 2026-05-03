@@ -6,7 +6,7 @@ import './.infra/i18n';
 
 import './theme/globals.css';
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem('vpn-theme')||'system';var d=t==='system'?window.matchMedia('(prefers-color-scheme:dark)').matches:t==='dark';document.documentElement.classList.toggle('dark',d)}catch(e){}})()`;
+const themeInitScript = `(function(){try{var t=localStorage.getItem('vpn-theme')||'dark';var d=t==='system'?window.matchMedia('(prefers-color-scheme:dark)').matches:t==='dark';document.documentElement.classList.toggle('dark',d)}catch(e){document.documentElement.classList.add('dark')}})()`;
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

@@ -55,7 +55,7 @@
     "noVpnDeviceDesc": "You open a website or app. Your device sends a request through your internet provider.",
     "noVpnIsp": "Internet Provider (ISP)",
     "noVpnIspDesc": "Your provider routes the traffic. Even with HTTPS, the ISP infrastructure contains special equipment the provider has no control over.",
-    "noVpnDpi": "DPI �� Deep Packet Inspection",
+    "noVpnDpi": "DPI — Deep Packet Inspection",
     "noVpnDpiDesc": "Government-mandated machines installed at ISP level — the provider cannot disable or remove them. DPI analyzes packet headers, server name indicators (SNI), response patterns, and traffic fingerprints. It can also probe the destination server directly to verify what service is actually running there. If the destination matches the blocklist — the connection is terminated.",
     "noVpnBlocked": "Access Blocked",
     "noVpnBlockedDesc": "DPI determined the destination is on the blocklist. The connection is dropped — you see an error page or a block notice.",

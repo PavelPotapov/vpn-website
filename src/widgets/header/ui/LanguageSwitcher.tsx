@@ -26,6 +26,13 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         <a
           key={code}
           href={getLocalizedPath(code)}
+          onClick={() => {
+            try {
+              localStorage.setItem('vpn-lang', code);
+            } catch (_) {
+              /* storage unavailable */
+            }
+          }}
           className={cn(
             'rounded-md px-2 py-1 text-xs font-medium uppercase transition-colors',
             currentLocale === code

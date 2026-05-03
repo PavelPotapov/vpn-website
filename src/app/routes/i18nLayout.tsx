@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { Outlet, useParams, redirect } from 'react-router';
 
 import i18n from '@/app/.infra/i18n/config';
+
 import { SUPPORTED_LANGUAGE_CODES } from '@/shared/lib/i18n';
 
 import type { Route } from './+types/i18nLayout';
 
 const DEFAULT_LOCALE = 'en';
+const LANG_STORAGE_KEY = 'vpn-lang';
 
 /**
  * ВАЖНО: синхронизация i18n на SSR до рендера.
@@ -30,11 +32,33 @@ export function loader({ params }: Route.LoaderArgs) {
   return null;
 }
 
-export function clientLoader({ params }: Route.ClientLoaderArgs) {
+export function clientLoader({ params, request }: Route.ClientLoaderArgs) {
   const { locale } = params;
   if (locale != null && !SUPPORTED_LANGUAGE_CODES.includes(locale)) {
     throw redirect('/');
   }
+
+  if (locale == null) {
+    try {
+      const stored = localStorage.getItem(LANG_STORAGE_KEY);
+      const preferred = stored && SUPPORTED_LANGUAGE_CODES.includes(stored) ? stored : 'ru';
+      if (preferred !== 'en') {
+        const url = new URL(request.url);
+        throw redirect(`/${preferred}${url.pathname === '/' ? '' : url.pathname}`);
+      }
+    } catch (e) {
+      if (e instanceof Response) throw e;
+    }
+  }
+
+  if (locale) {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, locale);
+    } catch (_) {
+      /* storage unavailable */
+    }
+  }
+
   return null;
 }
 
@@ -47,6 +71,11 @@ export default function I18nLayout() {
       void i18n.changeLanguage(resolvedLocale);
     }
     document.documentElement.lang = resolvedLocale;
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, resolvedLocale);
+    } catch (_) {
+      /* storage unavailable */
+    }
   }, [resolvedLocale]);
 
   return <Outlet />;

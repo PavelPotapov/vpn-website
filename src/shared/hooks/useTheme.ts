@@ -6,7 +6,7 @@ const STORAGE_KEY = 'vpn-theme';
 
 function getStoredTheme(): Theme {
   if (typeof window === 'undefined') return 'system';
-  return (localStorage.getItem(STORAGE_KEY) as Theme) ?? 'system';
+  return (localStorage.getItem(STORAGE_KEY) as Theme) ?? 'dark';
 }
 
 function getSystemTheme(): 'light' | 'dark' {
@@ -24,7 +24,7 @@ function applyTheme(theme: Theme) {
 }
 
 let listeners: Array<() => void> = [];
-let currentTheme: Theme = 'system';
+let currentTheme: Theme = 'dark';
 
 function subscribe(listener: () => void) {
   listeners = [...listeners, listener];
@@ -38,7 +38,7 @@ function getSnapshot() {
 }
 
 function getServerSnapshot(): Theme {
-  return 'system';
+  return 'dark';
 }
 
 function setTheme(theme: Theme) {
