@@ -27,7 +27,12 @@ interface Spark {
   stepInterval: number;
 }
 
-const MAIN_DIRS: [number, number][] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+const MAIN_DIRS: [number, number][] = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+];
 
 export class CanvasDotGridEngine implements IDotGridEngine {
   private canvas: HTMLCanvasElement;
@@ -128,8 +133,8 @@ export class CanvasDotGridEngine implements IDotGridEngine {
     for (let row = 0; row < this.rows; row++) {
       this.dots[row] = [];
       for (let col = 0; col < this.cols; col++) {
-        const bx = ((this.w - (this.cols - 1) * gap) / 2) + col * gap;
-        const by = ((this.h - (this.rows - 1) * gap) / 2) + row * gap;
+        const bx = (this.w - (this.cols - 1) * gap) / 2 + col * gap;
+        const by = (this.h - (this.rows - 1) * gap) / 2 + row * gap;
 
         let baseAlpha = 0.5 + Math.random() * 0.2;
         if (perspective) {
@@ -139,8 +144,12 @@ export class CanvasDotGridEngine implements IDotGridEngine {
         }
 
         this.dots[row][col] = {
-          col, row,
-          baseX: bx, baseY: by, x: bx, y: by,
+          col,
+          row,
+          baseX: bx,
+          baseY: by,
+          x: bx,
+          y: by,
           baseAlpha,
           pulseOffset: Math.random() * Math.PI * 2,
           pulseSpeed: pulseSpeed * (0.6 + Math.random() * 0.8),
@@ -162,14 +171,16 @@ export class CanvasDotGridEngine implements IDotGridEngine {
     let startCol: number, startRow: number;
     if (isHoriz) {
       startRow = 1 + Math.floor(Math.random() * (this.rows - 2));
-      startCol = mainDirCol === 1
-        ? Math.floor(Math.random() * Math.max(1, this.cols - totalSteps))
-        : totalSteps + Math.floor(Math.random() * Math.max(1, this.cols - totalSteps));
+      startCol =
+        mainDirCol === 1
+          ? Math.floor(Math.random() * Math.max(1, this.cols - totalSteps))
+          : totalSteps + Math.floor(Math.random() * Math.max(1, this.cols - totalSteps));
     } else {
       startCol = 1 + Math.floor(Math.random() * (this.cols - 2));
-      startRow = mainDirRow === 1
-        ? Math.floor(Math.random() * Math.max(1, this.rows - totalSteps))
-        : totalSteps + Math.floor(Math.random() * Math.max(1, this.rows - totalSteps));
+      startRow =
+        mainDirRow === 1
+          ? Math.floor(Math.random() * Math.max(1, this.rows - totalSteps))
+          : totalSteps + Math.floor(Math.random() * Math.max(1, this.rows - totalSteps));
     }
 
     startCol = Math.max(0, Math.min(this.cols - 1, startCol));
@@ -216,8 +227,8 @@ export class CanvasDotGridEngine implements IDotGridEngine {
       const prevRow = s.row;
 
       if (Math.random() < diagonalChance) {
-        const perpCol = s.mainDirRow === 0 ? 0 : (Math.random() > 0.5 ? 1 : -1);
-        const perpRow = s.mainDirCol === 0 ? 0 : (Math.random() > 0.5 ? 1 : -1);
+        const perpCol = s.mainDirRow === 0 ? 0 : Math.random() > 0.5 ? 1 : -1;
+        const perpRow = s.mainDirCol === 0 ? 0 : Math.random() > 0.5 ? 1 : -1;
         s.col += s.mainDirCol + perpCol;
         s.row += s.mainDirRow + perpRow;
       } else {
@@ -258,7 +269,7 @@ export class CanvasDotGridEngine implements IDotGridEngine {
     if (!this.running) return;
 
     const { ctx } = this;
-    const { grid, sparks: sparkCfg, physics, glow } = this.config;
+    const { grid, sparks: sparkCfg, physics } = this.config;
     const { gap, dotColor } = grid;
     const { decay, glowIntensity } = sparkCfg;
     const maxShift = gap * physics.maxShiftFactor;
@@ -316,7 +327,7 @@ export class CanvasDotGridEngine implements IDotGridEngine {
             const influence = 1 - distM / physics.mouseRadius;
             const smooth = influence * influence * (3 - 2 * influence);
             const shiftX = dxM * smooth * physics.mouseForce;
-            const shiftY = (dyM * smooth * physics.mouseForce) - (smooth * maxShift * 0.3);
+            const shiftY = dyM * smooth * physics.mouseForce - smooth * maxShift * 0.3;
 
             const len = Math.sqrt(shiftX * shiftX + shiftY * shiftY);
             if (len > maxShift) {
@@ -360,18 +371,16 @@ export class CanvasDotGridEngine implements IDotGridEngine {
         if (hasSpark && dot.sparkAlpha > 0.15) {
           ctx.shadowBlur = 10 + dot.sparkAlpha * 12;
           ctx.shadowColor = `rgba(${sparkCfg.color}, ${dot.sparkAlpha * glowIntensity})`;
-        } else if (alpha > 0.3) {
-          ctx.shadowBlur = 6;
-          ctx.shadowColor = `rgba(${glow.color}, ${alpha * 0.4})`;
         } else {
           ctx.shadowBlur = 0;
         }
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = hasSpark && dot.sparkAlpha > 0.15
-          ? `rgba(${sparkCfg.color}, ${alpha})`
-          : `rgba(${dotColor}, ${alpha})`;
+        ctx.fillStyle =
+          hasSpark && dot.sparkAlpha > 0.15
+            ? `rgba(${sparkCfg.color}, ${alpha})`
+            : `rgba(${dotColor}, ${alpha})`;
         ctx.fill();
 
         if (hasSpark) {

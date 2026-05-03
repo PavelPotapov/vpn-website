@@ -1,4 +1,4 @@
-import {
+﻿import {
   Zap,
   Shield,
   MousePointerClick,
@@ -11,15 +11,16 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
+import { VpnFlowDiagram } from '@/widgets/vpn-flow';
+
+import { DotGrid } from '@/shared/.core/dotGrid';
 import { useTranslation } from '@/shared/lib/i18n';
 import { useLocalePath } from '@/shared/lib/navigation';
-import { Button } from '@/shared/ui/button';
-import { Badge } from '@/shared/ui/badge';
 import { AccordionItem } from '@/shared/ui/accordion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from '@/shared/ui/animate-on-scroll';
-import { DotGrid } from '@/shared/.core/dotGrid';
+import { Badge } from '@/shared/ui/badge';
+import { Button } from '@/shared/ui/button';
 import { NeonCard } from '@/shared/ui/neon-card';
-import { VpnFlowDiagram } from '@/widgets/vpn-flow';
 
 export const LandingPage = () => {
   const lp = useLocalePath();
@@ -37,7 +38,7 @@ export const LandingPage = () => {
   );
 };
 
-/* ── Hero + Benefits (shared grid canvas) ── */
+/* в”Ђв”Ђ Hero + Benefits (shared grid canvas) в”Ђв”Ђ */
 function HeroBenefitsBlock() {
   const { t } = useTranslation();
 
@@ -50,11 +51,31 @@ function HeroBenefitsBlock() {
 
   const benefits = [
     { icon: Zap, title: t('benefits.speed'), desc: t('benefits.speedDesc'), glow: '#3B9BF5' },
-    { icon: ShieldCheck, title: t('benefits.stability'), desc: t('benefits.stabilityDesc'), glow: '#5AC8D8' },
-    { icon: MousePointerClick, title: t('benefits.simplicity'), desc: t('benefits.simplicityDesc'), glow: '#3B9BF5' },
+    {
+      icon: ShieldCheck,
+      title: t('benefits.stability'),
+      desc: t('benefits.stabilityDesc'),
+      glow: '#5AC8D8',
+    },
+    {
+      icon: MousePointerClick,
+      title: t('benefits.simplicity'),
+      desc: t('benefits.simplicityDesc'),
+      glow: '#3B9BF5',
+    },
     { icon: Eye, title: t('benefits.privacy'), desc: t('benefits.privacyDesc'), glow: '#5AC8D8' },
-    { icon: Monitor, title: t('benefits.platforms'), desc: t('benefits.platformsDesc'), glow: '#3B9BF5' },
-    { icon: MessageCircle, title: t('benefits.telegram'), desc: t('benefits.telegramDesc'), glow: '#5AC8D8' },
+    {
+      icon: Monitor,
+      title: t('benefits.platforms'),
+      desc: t('benefits.platformsDesc'),
+      glow: '#3B9BF5',
+    },
+    {
+      icon: MessageCircle,
+      title: t('benefits.telegram'),
+      desc: t('benefits.telegramDesc'),
+      glow: '#5AC8D8',
+    },
   ];
 
   return (
@@ -66,32 +87,47 @@ function HeroBenefitsBlock() {
         physics={{ enabled: true }}
       />
 
-      <div className="pointer-events-none absolute left-1/2 top-[15%] h-[400px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[100px] dark:bg-primary/10" />
+      <div className="bg-primary/5 dark:bg-primary/10 pointer-events-none absolute top-[15%] left-1/2 h-[400px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]" />
 
       {/* Hero */}
-      <div className="relative mx-auto max-w-5xl px-6 pb-16 pt-20 md:pb-24 md:pt-28">
-        <AnimateOnScroll id="landing-hero" preset="fade-up" duration={0.7} className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
-          <Badge variant="secondary" className="mb-5 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+      <div className="relative mx-auto max-w-5xl px-6 pt-20 pb-16 md:pt-28 md:pb-24">
+        <AnimateOnScroll
+          preset="fade-up"
+          duration={0.7}
+          className="mx-auto mb-12 max-w-3xl text-center md:mb-16"
+        >
+          <Badge
+            variant="secondary"
+            className="border-primary/20 bg-primary/5 text-primary mb-5 rounded-full border px-4 py-1.5 text-sm font-medium"
+          >
             {t('hero.badge')}
           </Badge>
-          <h1 className="mb-5 text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl">
+          <h1 className="mb-5 text-4xl leading-tight font-bold tracking-tight md:text-5xl lg:text-6xl">
             {t('hero.title')}
           </h1>
-          <p className="text-muted-foreground mb-8 text-lg md:text-xl">
-            {t('hero.subtitle')}
-          </p>
+          <p className="text-muted-foreground mb-8 text-lg md:text-xl">{t('hero.subtitle')}</p>
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button size="lg" className="glow-shadow h-12 rounded-2xl px-8 text-base transition-all duration-300 md:h-14 md:text-lg">
+            <Button
+              size="lg"
+              className="glow-shadow h-12 rounded-2xl px-8 text-base transition-all duration-300 md:h-14 md:text-lg"
+            >
               {t('hero.cta')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button variant="outline" size="lg" className="h-12 rounded-2xl border-border/50 px-8 text-base backdrop-blur-sm md:h-14 md:text-lg">
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-border/50 h-12 rounded-2xl px-8 text-base backdrop-blur-sm md:h-14 md:text-lg"
+            >
               {t('hero.secondary')}
             </Button>
           </div>
         </AnimateOnScroll>
 
-        <StaggerContainer id="landing-stats" className="relative mx-auto grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4" stagger={0.1}>
+        <StaggerContainer
+          className="relative mx-auto grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4"
+          stagger={0.1}
+        >
           {stats.map(({ value, label, icon: Icon }) => (
             <StaggerItem key={label} preset="scale-in">
               <NeonCard glowColor="#5AC8D8" className="rounded-xl">
@@ -108,10 +144,10 @@ function HeroBenefitsBlock() {
 
       {/* Benefits */}
       <div className="relative mx-auto max-w-6xl px-6 pb-20 md:pb-28">
-        <AnimateOnScroll id="landing-benefits-title" preset="fade-up" className="mb-16 text-center">
+        <AnimateOnScroll preset="fade-up" className="mb-16 text-center">
           <h2 className="text-3xl font-bold md:text-4xl">{t('benefits.title')}</h2>
         </AnimateOnScroll>
-        <StaggerContainer id="landing-benefits" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" stagger={0.1}>
+        <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" stagger={0.1}>
           {benefits.map(({ icon: Icon, title, desc, glow }) => (
             <StaggerItem key={title} preset="fade-up">
               <NeonCard glowColor={glow}>
@@ -131,7 +167,7 @@ function HeroBenefitsBlock() {
   );
 }
 
-/* ── Protocols ── */
+/* в”Ђв”Ђ Protocols в”Ђв”Ђ */
 function ProtocolsSection() {
   const { t } = useTranslation();
   const protocols = [
@@ -161,21 +197,26 @@ function ProtocolsSection() {
   return (
     <section className="relative overflow-hidden py-20 md:py-28">
       <div className="relative mx-auto max-w-5xl px-6">
-        <AnimateOnScroll id="landing-protocols-title" preset="fade-up" className="mb-16 text-center">
+        <AnimateOnScroll preset="fade-up" className="mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold md:text-4xl">{t('protocols.title')}</h2>
           <p className="text-muted-foreground text-lg">{t('protocols.subtitle')}</p>
         </AnimateOnScroll>
-        <StaggerContainer id="landing-protocols" className="grid gap-6 md:grid-cols-3" stagger={0.12}>
+        <StaggerContainer className="grid gap-6 md:grid-cols-3" stagger={0.12}>
           {protocols.map(({ name, desc, tag, icon: Icon, highlight }) => (
             <StaggerItem key={name} preset="fade-up">
               <NeonCard glowColor={highlight ? '#3B9BF5' : '#5AC8D8'}>
                 <div className="p-6">
                   <div className="mb-4 flex items-center justify-between">
                     <div className={`rounded-xl p-3 ${highlight ? 'bg-primary/10' : 'bg-muted'}`}>
-                      <Icon className={`h-6 w-6 ${highlight ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <Icon
+                        className={`h-6 w-6 ${highlight ? 'text-primary' : 'text-muted-foreground'}`}
+                      />
                     </div>
                     {tag && (
-                      <Badge variant={highlight ? 'default' : 'secondary'} className="rounded-full text-xs">
+                      <Badge
+                        variant={highlight ? 'default' : 'secondary'}
+                        className="rounded-full text-xs"
+                      >
                         {tag}
                       </Badge>
                     )}
@@ -192,14 +233,14 @@ function ProtocolsSection() {
   );
 }
 
-/* ── How It Works (VPN Flow) ── */
+/* в”Ђв”Ђ How It Works (VPN Flow) в”Ђв”Ђ */
 function FlowSection() {
   const { t } = useTranslation();
 
   return (
     <section className="py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <AnimateOnScroll id="landing-flow-title" preset="fade-up" className="mb-12 text-center">
+        <AnimateOnScroll preset="fade-up" className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold md:text-4xl">{t('flow.title')}</h2>
           <p className="text-muted-foreground text-lg">{t('flow.subtitle')}</p>
         </AnimateOnScroll>
@@ -209,7 +250,7 @@ function FlowSection() {
   );
 }
 
-/* ── Pricing Teaser ── */
+/* в”Ђв”Ђ Pricing Teaser в”Ђв”Ђ */
 function PricingTeaser({ pricingPath }: { pricingPath: string }) {
   const { t } = useTranslation();
   const plans = [
@@ -242,17 +283,20 @@ function PricingTeaser({ pricingPath }: { pricingPath: string }) {
   return (
     <section className="py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <AnimateOnScroll id="landing-pricing-title" preset="fade-up" className="mb-16 text-center">
+        <AnimateOnScroll preset="fade-up" className="mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold md:text-4xl">{t('pricingTeaser.title')}</h2>
           <p className="text-muted-foreground text-lg">{t('pricingTeaser.subtitle')}</p>
         </AnimateOnScroll>
-        <StaggerContainer id="landing-pricing" className="grid gap-6 md:grid-cols-3" stagger={0.12}>
+        <StaggerContainer className="grid gap-6 md:grid-cols-3" stagger={0.12}>
           {plans.map(({ name, period, price, devices, tag, highlight }) => (
             <StaggerItem key={name} preset="scale-in">
               <NeonCard glowColor={highlight ? '#3B9BF5' : '#5AC8D8'}>
                 <div className="p-6 text-center">
                   {tag ? (
-                    <Badge variant={highlight ? 'default' : 'secondary'} className="mb-4 rounded-full">
+                    <Badge
+                      variant={highlight ? 'default' : 'secondary'}
+                      className="mb-4 rounded-full"
+                    >
                       {tag}
                     </Badge>
                   ) : (
@@ -262,7 +306,9 @@ function PricingTeaser({ pricingPath }: { pricingPath: string }) {
                   <p className="text-muted-foreground mb-4 text-sm">{period}</p>
                   <div className="mb-4">
                     <span className="text-4xl font-bold">{price}</span>
-                    <span className="text-muted-foreground text-sm">{t('pricingTeaser.perMonth')}</span>
+                    <span className="text-muted-foreground text-sm">
+                      {t('pricingTeaser.perMonth')}
+                    </span>
                   </div>
                   <p className="text-muted-foreground mb-6 text-sm">{devices}</p>
                   <Button
@@ -277,7 +323,7 @@ function PricingTeaser({ pricingPath }: { pricingPath: string }) {
             </StaggerItem>
           ))}
         </StaggerContainer>
-        <AnimateOnScroll id="landing-pricing-cta" preset="fade-in" delay={0.4} className="mt-8 text-center">
+        <AnimateOnScroll preset="fade-in" delay={0.4} className="mt-8 text-center">
           <Button variant="ghost" asChild>
             <a href={pricingPath}>
               {t('pricingTeaser.cta')}
@@ -290,7 +336,7 @@ function PricingTeaser({ pricingPath }: { pricingPath: string }) {
   );
 }
 
-/* ── FAQ ── */
+/* в”Ђв”Ђ FAQ в”Ђв”Ђ */
 function FaqSection() {
   const { t } = useTranslation();
   const faqs = [
@@ -304,15 +350,13 @@ function FaqSection() {
   return (
     <section className="bg-muted/30 py-20 md:py-28">
       <div className="mx-auto max-w-2xl px-6">
-        <AnimateOnScroll id="landing-faq-title" preset="fade-up" className="mb-12 text-center">
+        <AnimateOnScroll preset="fade-up" className="mb-12 text-center">
           <h2 className="text-3xl font-bold md:text-4xl">{t('faq.title')}</h2>
         </AnimateOnScroll>
-        <StaggerContainer id="landing-faq" stagger={0.06}>
+        <StaggerContainer stagger={0.06}>
           {faqs.map(({ q, a }) => (
             <StaggerItem key={q} preset="fade-up">
-              <AccordionItem trigger={q}>
-                {a}
-              </AccordionItem>
+              <AccordionItem trigger={q}>{a}</AccordionItem>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -321,7 +365,7 @@ function FaqSection() {
   );
 }
 
-/* ── Final CTA ── */
+/* в”Ђв”Ђ Final CTA в”Ђв”Ђ */
 function FinalCta() {
   const { t } = useTranslation();
 
@@ -335,12 +379,19 @@ function FinalCta() {
         physics={{ enabled: true }}
       />
 
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[120px] dark:bg-primary/15" />
+      <div className="bg-primary/8 dark:bg-primary/15 pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]" />
 
-      <AnimateOnScroll id="landing-final-cta" preset="fade-up" duration={0.7} className="relative mx-auto max-w-3xl px-6 text-center">
+      <AnimateOnScroll
+        preset="fade-up"
+        duration={0.7}
+        className="relative mx-auto max-w-3xl px-6 text-center"
+      >
         <h2 className="mb-4 text-3xl font-bold md:text-5xl">{t('finalCta.title')}</h2>
         <p className="text-muted-foreground mb-10 text-lg">{t('finalCta.subtitle')}</p>
-        <Button size="lg" className="glow-shadow h-14 rounded-2xl px-10 text-lg transition-all duration-300">
+        <Button
+          size="lg"
+          className="glow-shadow h-14 rounded-2xl px-10 text-lg transition-all duration-300"
+        >
           {t('finalCta.cta')}
           <ArrowRight className="ml-2 h-5 w-5" />
         </Button>

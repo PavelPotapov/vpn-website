@@ -1,11 +1,11 @@
-import { Check, ArrowRight } from 'lucide-react';
+﻿import { Check, ArrowRight } from 'lucide-react';
 
 import { useTranslation } from '@/shared/lib/i18n';
-import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
 import { AccordionItem } from '@/shared/ui/accordion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from '@/shared/ui/animate-on-scroll';
+import { Badge } from '@/shared/ui/badge';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent } from '@/shared/ui/card';
 
 export const PricingPage = () => {
   return (
@@ -19,24 +19,26 @@ export const PricingPage = () => {
   );
 };
 
-/* ── Hero ── */
+/* в”Ђв”Ђ Hero в”Ђв”Ђ */
 function PricingHero() {
   const { t } = useTranslation();
 
   return (
     <section className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#EDF4FC] to-transparent dark:from-[#0C1222] dark:to-transparent" />
-      <AnimateOnScroll id="pricing-hero" preset="fade-up" duration={0.7} className="relative mx-auto max-w-3xl px-6 pb-8 pt-24 text-center md:pt-32">
-        <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-          {t('pricing.title')}
-        </h1>
+      <AnimateOnScroll
+        preset="fade-up"
+        duration={0.7}
+        className="relative mx-auto max-w-3xl px-6 pt-24 pb-8 text-center md:pt-32"
+      >
+        <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">{t('pricing.title')}</h1>
         <p className="text-muted-foreground text-lg">{t('pricing.subtitle')}</p>
       </AnimateOnScroll>
     </section>
   );
 }
 
-/* ── Plan Cards ── */
+/* в”Ђв”Ђ Plan Cards в”Ђв”Ђ */
 function PlanCards() {
   const { t } = useTranslation();
 
@@ -72,53 +74,56 @@ function PlanCards() {
 
   return (
     <section className="py-16 md:py-20">
-      <StaggerContainer id="pricing-plans" className="mx-auto grid max-w-5xl gap-6 px-6 md:grid-cols-3" stagger={0.12}>
+      <StaggerContainer className="mx-auto grid max-w-5xl gap-6 px-6 md:grid-cols-3" stagger={0.12}>
         {plans.map(({ name, period, price, devices, total, tag, highlight }) => (
-          <StaggerItem key={name} preset="scale-in"><Card
-            key={name}
-            className={`relative border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
-              highlight
-                ? 'border-primary/30 shadow-lg shadow-primary/5'
-                : 'border-border/50 shadow-sm'
-            }`}
-          >
-            <CardContent className="flex flex-col p-6 md:p-8">
-              {tag && (
-                <Badge variant={highlight ? 'default' : 'secondary'} className="mb-4 w-fit rounded-full">
-                  {tag}
-                </Badge>
-              )}
-              {!tag && <div className="mb-4 h-[22px]" />}
+          <StaggerItem key={name} preset="scale-in">
+            <Card
+              key={name}
+              className={`relative border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
+                highlight
+                  ? 'border-primary/30 shadow-primary/5 shadow-lg'
+                  : 'border-border/50 shadow-sm'
+              }`}
+            >
+              <CardContent className="flex flex-col p-6 md:p-8">
+                {tag && (
+                  <Badge
+                    variant={highlight ? 'default' : 'secondary'}
+                    className="mb-4 w-fit rounded-full"
+                  >
+                    {tag}
+                  </Badge>
+                )}
+                {!tag && <div className="mb-4 h-[22px]" />}
 
-              <h3 className="mb-1 text-xl font-semibold">{name}</h3>
-              <p className="text-muted-foreground mb-6 text-sm">{period}</p>
+                <h3 className="mb-1 text-xl font-semibold">{name}</h3>
+                <p className="text-muted-foreground mb-6 text-sm">{period}</p>
 
-              <div className="mb-2">
-                <span className="text-4xl font-bold">{price}</span>
-                <span className="text-muted-foreground text-sm">{t('pricing.perMonth')}</span>
-              </div>
-              {total && (
-                <p className="text-muted-foreground mb-6 text-xs">{total}</p>
-              )}
-              {!total && <div className="mb-6" />}
+                <div className="mb-2">
+                  <span className="text-4xl font-bold">{price}</span>
+                  <span className="text-muted-foreground text-sm">{t('pricing.perMonth')}</span>
+                </div>
+                {total && <p className="text-muted-foreground mb-6 text-xs">{total}</p>}
+                {!total && <div className="mb-6" />}
 
-              <p className="text-muted-foreground mb-6 text-sm">{devices}</p>
+                <p className="text-muted-foreground mb-6 text-sm">{devices}</p>
 
-              <ul className="mb-8 space-y-2">
-                <IncludedItem text={t('pricing.allProtocols')} />
-                <IncludedItem text={t('pricing.unlimited')} />
-                <IncludedItem text={t('pricing.noLogs')} />
-                <IncludedItem text={t('pricing.telegramSupport')} />
-              </ul>
+                <ul className="mb-8 space-y-2">
+                  <IncludedItem text={t('pricing.allProtocols')} />
+                  <IncludedItem text={t('pricing.unlimited')} />
+                  <IncludedItem text={t('pricing.noLogs')} />
+                  <IncludedItem text={t('pricing.telegramSupport')} />
+                </ul>
 
-              <Button
-                variant={highlight ? 'default' : 'outline'}
-                className="mt-auto w-full rounded-xl"
-              >
-                {t('pricing.choosePlan')}
-              </Button>
-            </CardContent>
-          </Card></StaggerItem>
+                <Button
+                  variant={highlight ? 'default' : 'outline'}
+                  className="mt-auto w-full rounded-xl"
+                >
+                  {t('pricing.choosePlan')}
+                </Button>
+              </CardContent>
+            </Card>
+          </StaggerItem>
         ))}
       </StaggerContainer>
     </section>
@@ -134,7 +139,7 @@ function IncludedItem({ text }: { text: string }) {
   );
 }
 
-/* ── What's Included ── */
+/* в”Ђв”Ђ What's Included в”Ђв”Ђ */
 function WhatsIncluded() {
   const { t } = useTranslation();
   const items = [
@@ -149,10 +154,13 @@ function WhatsIncluded() {
   return (
     <section className="bg-muted/50 py-16 md:py-20">
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <AnimateOnScroll id="pricing-included-title" preset="fade-up">
+        <AnimateOnScroll preset="fade-up">
           <h2 className="mb-8 text-2xl font-bold md:text-3xl">{t('pricing.included')}</h2>
         </AnimateOnScroll>
-        <StaggerContainer id="pricing-included" className="grid gap-x-8 gap-y-4 sm:grid-cols-2 md:grid-cols-3" stagger={0.06}>
+        <StaggerContainer
+          className="grid gap-x-8 gap-y-4 sm:grid-cols-2 md:grid-cols-3"
+          stagger={0.06}
+        >
           {items.map((item) => (
             <StaggerItem key={item} preset="fade-up">
               <div className="flex items-center gap-2 text-left">
@@ -167,7 +175,7 @@ function WhatsIncluded() {
   );
 }
 
-/* ── FAQ ── */
+/* в”Ђв”Ђ FAQ в”Ђв”Ђ */
 function PricingFaq() {
   const { t } = useTranslation();
   const faqs = [
@@ -180,17 +188,13 @@ function PricingFaq() {
   return (
     <section className="py-16 md:py-20">
       <div className="mx-auto max-w-2xl px-6">
-        <AnimateOnScroll id="pricing-faq-title" preset="fade-up" className="mb-12 text-center">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            {t('pricing.faqTitle')}
-          </h2>
+        <AnimateOnScroll preset="fade-up" className="mb-12 text-center">
+          <h2 className="text-2xl font-bold md:text-3xl">{t('pricing.faqTitle')}</h2>
         </AnimateOnScroll>
-        <StaggerContainer id="pricing-faq" stagger={0.06}>
+        <StaggerContainer stagger={0.06}>
           {faqs.map(({ q, a }) => (
             <StaggerItem key={q} preset="fade-up">
-              <AccordionItem trigger={q}>
-                {a}
-              </AccordionItem>
+              <AccordionItem trigger={q}>{a}</AccordionItem>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -199,17 +203,21 @@ function PricingFaq() {
   );
 }
 
-/* ── Final CTA ── */
+/* в”Ђв”Ђ Final CTA в”Ђв”Ђ */
 function PricingCta() {
   const { t } = useTranslation();
 
   return (
     <section className="relative overflow-hidden py-16 md:py-20">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#EDF4FC] to-transparent dark:via-[#152033]" />
-      <AnimateOnScroll id="pricing-cta" preset="fade-up" duration={0.7} className="relative mx-auto max-w-3xl px-6 text-center">
+      <AnimateOnScroll
+        preset="fade-up"
+        duration={0.7}
+        className="relative mx-auto max-w-3xl px-6 text-center"
+      >
         <h2 className="mb-4 text-3xl font-bold">{t('finalCta.title')}</h2>
         <p className="text-muted-foreground mb-8 text-lg">{t('finalCta.subtitle')}</p>
-        <Button size="lg" className="h-14 rounded-2xl px-10 text-lg shadow-lg shadow-primary/20">
+        <Button size="lg" className="shadow-primary/20 h-14 rounded-2xl px-10 text-lg shadow-lg">
           {t('finalCta.cta')}
           <ArrowRight className="ml-2 h-5 w-5" />
         </Button>

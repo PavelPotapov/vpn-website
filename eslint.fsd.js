@@ -76,9 +76,6 @@ const fsdConfig = [
     },
     settings: {
       'boundaries/elements': boundaryElements,
-      'import/resolver': {
-        typescript: { alwaysTryTypes: true },
-      },
     },
     rules: {
       'boundaries/element-types': ['error', { default: 'disallow', rules: layerDependencyRules }],

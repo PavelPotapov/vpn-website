@@ -36,48 +36,48 @@
 @layer base {
   :root {
     --radius: 0.75rem;
-    --background: #F8FBFF;
-    --foreground: #1A2332;
-    --card: #FFFFFF;
-    --card-foreground: #1A2332;
-    --popover: #FFFFFF;
-    --popover-foreground: #1A2332;
-    --primary: #3B9BF5;
-    --primary-foreground: #FFFFFF;
-    --secondary: #EDF4FC;
-    --secondary-foreground: #1A2332;
-    --muted: #F0F5FA;
-    --muted-foreground: #6B7D93;
-    --accent: #5AC8D8;
-    --accent-foreground: #FFFFFF;
-    --destructive: #EF4444;
-    --destructive-foreground: #FFFFFF;
-    --border: #E2EBF3;
-    --input: #E2EBF3;
-    --ring: #3B9BF5;
+    --background: #f8fbff;
+    --foreground: #1a2332;
+    --card: #ffffff;
+    --card-foreground: #1a2332;
+    --popover: #ffffff;
+    --popover-foreground: #1a2332;
+    --primary: #3b9bf5;
+    --primary-foreground: #ffffff;
+    --secondary: #edf4fc;
+    --secondary-foreground: #1a2332;
+    --muted: #f0f5fa;
+    --muted-foreground: #6b7d93;
+    --accent: #5ac8d8;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2ebf3;
+    --input: #e2ebf3;
+    --ring: #3b9bf5;
   }
 
   /* ── Dark mode ── */
   .dark {
-    --background: #0C1222;
-    --foreground: #E8EDF5;
-    --card: #131D30;
-    --card-foreground: #E8EDF5;
-    --popover: #131D30;
-    --popover-foreground: #E8EDF5;
-    --primary: #5AADFF;
-    --primary-foreground: #0C1222;
-    --secondary: #1A2744;
-    --secondary-foreground: #E8EDF5;
+    --background: #0c1222;
+    --foreground: #e8edf5;
+    --card: #131d30;
+    --card-foreground: #e8edf5;
+    --popover: #131d30;
+    --popover-foreground: #e8edf5;
+    --primary: #5aadff;
+    --primary-foreground: #0c1222;
+    --secondary: #1a2744;
+    --secondary-foreground: #e8edf5;
     --muted: #152033;
-    --muted-foreground: #8899AC;
-    --accent: #5AC8D8;
-    --accent-foreground: #0C1222;
-    --destructive: #EF4444;
-    --destructive-foreground: #E8EDF5;
-    --border: #1E3050;
-    --input: #1E3050;
-    --ring: #5AADFF;
+    --muted-foreground: #8899ac;
+    --accent: #5ac8d8;
+    --accent-foreground: #0c1222;
+    --destructive: #ef4444;
+    --destructive-foreground: #e8edf5;
+    --border: #1e3050;
+    --input: #1e3050;
+    --ring: #5aadff;
   }
 
   body {
@@ -87,10 +87,10 @@
 
   button,
   a,
-  [role="button"],
-  [type="button"],
-  [type="submit"],
-  [type="reset"],
+  [role='button'],
+  [type='button'],
+  [type='submit'],
+  [type='reset'],
   summary,
   select {
     cursor: pointer;
@@ -103,19 +103,19 @@
     background: conic-gradient(
       from var(--neon-angle, 0deg),
       transparent 0%,
-      var(--neon-color, #3B9BF5) 10%,
+      var(--neon-color, #3b9bf5) 10%,
       transparent 20%,
       transparent 80%,
-      var(--neon-color, #5AC8D8) 90%,
+      var(--neon-color, #5ac8d8) 90%,
       transparent 100%
     );
-    animation: neon-spin 4s linear infinite;
     opacity: 0;
     transition: opacity 0.5s;
   }
 
   .neon-card:hover .neon-card-border {
     opacity: 1;
+    animation: neon-spin 4s linear infinite;
   }
 
   @keyframes neon-spin {
@@ -125,7 +125,7 @@
   }
 
   @property --neon-angle {
-    syntax: "<angle>";
+    syntax: '<angle>';
     initial-value: 0deg;
     inherits: false;
   }

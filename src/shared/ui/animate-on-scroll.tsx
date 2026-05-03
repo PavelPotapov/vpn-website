@@ -1,40 +1,10 @@
-import { createContext, type ReactNode, useCallback, useContext, useRef, useSyncExternalStore } from 'react';
 import { motion, type Variant } from 'motion/react';
-
-const SkipAnimationCtx = createContext(false);
+import { type ReactNode } from 'react';
 
 type AnimationPreset = 'fade-up' | 'fade-in' | 'scale-in' | 'slide-left' | 'slide-right';
 
-const STORAGE_PREFIX = 'anim:';
-
-function wasSeen(id: string): boolean {
-  try {
-    return sessionStorage.getItem(STORAGE_PREFIX + id) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function markSeen(id: string): void {
-  try {
-    sessionStorage.setItem(STORAGE_PREFIX + id, '1');
-  } catch {
-    /* quota exceeded or SSR — ignore */
-  }
-}
-
-const subscribe = () => () => {};
-function useHasBeenSeen(id: string | undefined): boolean {
-  return useSyncExternalStore(
-    subscribe,
-    () => (id ? wasSeen(id) : false),
-    () => false,
-  );
-}
-
 interface AnimateOnScrollProps {
   children: ReactNode;
-  id?: string;
   preset?: AnimationPreset;
   delay?: number;
   duration?: number;
@@ -68,7 +38,6 @@ const presets: Record<AnimationPreset, { hidden: Variant; visible: Variant }> = 
 
 export function AnimateOnScroll({
   children,
-  id,
   preset = 'fade-up',
   delay = 0,
   duration = 0.5,
@@ -77,19 +46,6 @@ export function AnimateOnScroll({
   amount = 0.15,
 }: AnimateOnScrollProps) {
   const { hidden, visible } = presets[preset];
-  const alreadySeen = useHasBeenSeen(id);
-  const markedRef = useRef(false);
-
-  const onVisible = useCallback(() => {
-    if (id && !markedRef.current) {
-      markedRef.current = true;
-      markSeen(id);
-    }
-  }, [id]);
-
-  if (alreadySeen) {
-    return <div className={className}>{children}</div>;
-  }
 
   return (
     <motion.div
@@ -100,7 +56,6 @@ export function AnimateOnScroll({
         hidden,
         visible: { ...visible, transition: { duration, delay, ease: 'easeOut' } },
       }}
-      onAnimationComplete={onVisible}
       className={className}
     >
       {children}
@@ -110,7 +65,6 @@ export function AnimateOnScroll({
 
 interface StaggerContainerProps {
   children: ReactNode;
-  id?: string;
   className?: string;
   stagger?: number;
   once?: boolean;
@@ -119,30 +73,11 @@ interface StaggerContainerProps {
 
 export function StaggerContainer({
   children,
-  id,
   className,
   stagger = 0.08,
   once = true,
   amount = 0.1,
 }: StaggerContainerProps) {
-  const alreadySeen = useHasBeenSeen(id);
-  const markedRef = useRef(false);
-
-  const onVisible = useCallback(() => {
-    if (id && !markedRef.current) {
-      markedRef.current = true;
-      markSeen(id);
-    }
-  }, [id]);
-
-  if (alreadySeen) {
-    return (
-      <SkipAnimationCtx.Provider value={true}>
-        <div className={className}>{children}</div>
-      </SkipAnimationCtx.Provider>
-    );
-  }
-
   return (
     <motion.div
       initial="hidden"
@@ -152,7 +87,6 @@ export function StaggerContainer({
         hidden: {},
         visible: { transition: { staggerChildren: stagger } },
       }}
-      onAnimationComplete={onVisible}
       className={className}
     >
       {children}
@@ -173,12 +107,6 @@ export function StaggerItem({
   duration = 0.5,
   className,
 }: StaggerItemProps) {
-  const skip = useContext(SkipAnimationCtx);
-
-  if (skip) {
-    return <div className={className}>{children}</div>;
-  }
-
   const { hidden, visible } = presets[preset];
 
   return (
