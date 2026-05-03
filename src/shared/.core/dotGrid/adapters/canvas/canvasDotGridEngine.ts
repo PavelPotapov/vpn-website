@@ -131,7 +131,7 @@ export class CanvasDotGridEngine implements IDotGridEngine {
         const bx = ((this.w - (this.cols - 1) * gap) / 2) + col * gap;
         const by = ((this.h - (this.rows - 1) * gap) / 2) + row * gap;
 
-        let baseAlpha = 0.18 + Math.random() * 0.12;
+        let baseAlpha = 0.5 + Math.random() * 0.2;
         if (perspective) {
           const cy = this.h / 2;
           const dist = Math.abs(by - cy) / (this.h / 2);

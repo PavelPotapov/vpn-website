@@ -1,318 +1,202 @@
-import { useCallback, useMemo } from 'react';
+import { type ComponentType } from 'react';
+import { motion, type Variants } from 'motion/react';
 import {
-  ReactFlow,
-  type Node,
-  type Edge,
-  Position,
-  MarkerType,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+  Smartphone, Building2, ScanSearch, Ban,
+  ShieldCheck, Lock, Server, Globe, Eye,
+} from 'lucide-react';
 
 import { useTranslation } from '@/shared/lib/i18n';
-import { useIsMobile } from '@/shared/hooks';
 
-import { FlowNode } from './FlowNode';
-import { RowLabel } from './RowLabel';
+type CardVariant = 'neutral' | 'warning' | 'danger' | 'safe' | 'success' | 'info';
 
-const DANGER = '#ef4444';
-const DANGER_DIM = '#f87171';
-const SAFE = '#3B9BF5';
-const SAFE_ALT = '#22c55e';
+const vs: Record<CardVariant, { card: string; icon: string }> = {
+  neutral: {
+    card: 'border-blue-200/70 bg-blue-50/50 dark:border-blue-800/40 dark:bg-blue-950/30',
+    icon: 'text-blue-500 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/40',
+  },
+  warning: {
+    card: 'border-amber-300/70 bg-amber-50/50 dark:border-amber-700/40 dark:bg-amber-950/30',
+    icon: 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',
+  },
+  danger: {
+    card: 'border-red-300/70 bg-red-50/50 dark:border-red-800/40 dark:bg-red-950/30',
+    icon: 'text-red-500 bg-red-100 dark:text-red-400 dark:bg-red-900/40',
+  },
+  safe: {
+    card: 'border-emerald-200/70 bg-emerald-50/50 dark:border-emerald-800/40 dark:bg-emerald-950/30',
+    icon: 'text-emerald-500 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900/40',
+  },
+  success: {
+    card: 'border-emerald-300/70 bg-emerald-50/70 dark:border-emerald-700/50 dark:bg-emerald-950/40',
+    icon: 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900/50',
+  },
+  info: {
+    card: 'border-violet-200/70 bg-violet-50/50 dark:border-violet-800/40 dark:bg-violet-950/30',
+    icon: 'text-violet-500 bg-violet-100 dark:text-violet-400 dark:bg-violet-900/40',
+  },
+};
+
+const lineTextColor: Record<string, string> = {
+  blue: 'text-blue-300 dark:text-blue-600',
+  red: 'text-red-300 dark:text-red-600',
+  green: 'text-emerald-300 dark:text-emerald-600',
+};
+
+const cardV: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+};
+
+const connV: Variants = {
+  hidden: { scaleY: 0, opacity: 0 },
+  visible: { scaleY: 1, opacity: 1, transition: { duration: 0.3, ease: 'easeOut' } },
+};
+
+const branchV: Variants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+};
+
+const colV: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.13 } },
+};
+
+function FlowCard({
+  icon: Icon,
+  title,
+  description,
+  variant,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  variant: CardVariant;
+}) {
+  const s = vs[variant];
+  return (
+    <motion.div variants={cardV} className={`rounded-2xl border p-5 ${s.card}`}>
+      <div className="flex gap-4">
+        <div className={`shrink-0 self-start rounded-xl p-2.5 ${s.icon}`}>
+          <Icon className="h-6 w-6" />
+        </div>
+        <div className="min-w-0">
+          <h4 className="font-semibold leading-snug">{title}</h4>
+          <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">{description}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function Connector({ color }: { color: string }) {
+  return (
+    <motion.div
+      variants={connV}
+      className="flex justify-center py-1"
+      style={{ transformOrigin: 'top' }}
+    >
+      <svg width="2" height="32" className={lineTextColor[color]}>
+        <line
+          x1="1" y1="0" x2="1" y2="32"
+          stroke="currentColor" strokeWidth="2"
+          strokeDasharray="6 6"
+          className="animate-flow-down"
+        />
+      </svg>
+    </motion.div>
+  );
+}
 
 export function VpnFlowDiagram() {
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
-
-  const nodeTypes = useMemo(() => ({ flowNode: FlowNode, rowLabel: RowLabel }), []);
-
-  const nodes: Node[] = useMemo(() => {
-    const gap = isMobile ? 140 : 210;
-    const row1Y = 20;
-    const row2Y = isMobile ? 150 : 170;
-
-    if (isMobile) {
-      return [
-        // ── Row 1: Without VPN (no label on mobile, tighter) ──
-        {
-          id: 'label-no-vpn',
-          type: 'rowLabel',
-          position: { x: 0, y: row1Y + 15 },
-          data: { label: t('flow.noVpnLabel'), variant: 'danger' },
-          draggable: false,
-          selectable: false,
-        },
-        {
-          id: 'no-device',
-          type: 'flowNode',
-          position: { x: 90, y: row1Y },
-          data: { label: t('flow.noDevice'), description: t('flow.noDeviceDesc'), icon: 'smartphone', variant: 'default' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'no-request',
-          type: 'flowNode',
-          position: { x: 90 + gap, y: row1Y },
-          data: { label: t('flow.noRequest'), description: t('flow.noRequestDesc'), icon: 'lockOpen', variant: 'default' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'no-isp',
-          type: 'flowNode',
-          position: { x: 90 + gap * 2, y: row1Y },
-          data: { label: t('flow.noIsp'), description: t('flow.noIspDesc'), icon: 'eye', variant: 'blocked' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'no-blocked',
-          type: 'flowNode',
-          position: { x: 90 + gap * 3, y: row1Y },
-          data: { label: t('flow.noBlocked'), description: t('flow.noBlockedDesc'), icon: 'ban', variant: 'blocked' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-
-        // ── Row 2: With VPN ──
-        {
-          id: 'label-vpn',
-          type: 'rowLabel',
-          position: { x: 0, y: row2Y + 15 },
-          data: { label: t('flow.vpnLabel'), variant: 'safe' },
-          draggable: false,
-          selectable: false,
-        },
-        {
-          id: 'vpn-device',
-          type: 'flowNode',
-          position: { x: 90, y: row2Y },
-          data: { label: t('flow.vpnDevice'), description: t('flow.vpnDeviceDesc'), icon: 'smartphone', variant: 'default' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'vpn-encrypt',
-          type: 'flowNode',
-          position: { x: 90 + gap, y: row2Y },
-          data: { label: t('flow.vpnEncrypt'), description: t('flow.vpnEncryptDesc'), icon: 'lock', variant: 'primary' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'vpn-isp',
-          type: 'flowNode',
-          position: { x: 90 + gap * 2, y: row2Y },
-          data: { label: t('flow.vpnIsp'), description: t('flow.vpnIspDesc'), icon: 'shieldCheck', variant: 'success' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'vpn-server',
-          type: 'flowNode',
-          position: { x: 90 + gap * 3, y: row2Y },
-          data: { label: t('flow.vpnServer'), description: t('flow.vpnServerDesc'), icon: 'server', variant: 'primary' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-        {
-          id: 'vpn-internet',
-          type: 'flowNode',
-          position: { x: 90 + gap * 4, y: row2Y },
-          data: { label: t('flow.vpnInternet'), description: t('flow.vpnInternetDesc'), icon: 'globe', variant: 'success' as const },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-        },
-      ];
-    }
-
-    // Desktop layout
-    const labelW = 120;
-    const startX = labelW + 30;
-
-    return [
-      // ── Row 1: Without VPN ──
-      {
-        id: 'label-no-vpn',
-        type: 'rowLabel',
-        position: { x: 0, y: row1Y + 20 },
-        data: { label: t('flow.noVpnLabel'), variant: 'danger' },
-        draggable: false,
-        selectable: false,
-      },
-      {
-        id: 'no-device',
-        type: 'flowNode',
-        position: { x: startX, y: row1Y },
-        data: { label: t('flow.noDevice'), description: t('flow.noDeviceDesc'), icon: 'smartphone', variant: 'default' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'no-request',
-        type: 'flowNode',
-        position: { x: startX + gap, y: row1Y },
-        data: { label: t('flow.noRequest'), description: t('flow.noRequestDesc'), icon: 'lockOpen', variant: 'default' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'no-isp',
-        type: 'flowNode',
-        position: { x: startX + gap * 2, y: row1Y },
-        data: { label: t('flow.noIsp'), description: t('flow.noIspDesc'), icon: 'eye', variant: 'blocked' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'no-blocked',
-        type: 'flowNode',
-        position: { x: startX + gap * 3, y: row1Y },
-        data: { label: t('flow.noBlocked'), description: t('flow.noBlockedDesc'), icon: 'ban', variant: 'blocked' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-
-      // ── Row 2: With VPN ──
-      {
-        id: 'label-vpn',
-        type: 'rowLabel',
-        position: { x: 0, y: row2Y + 25 },
-        data: { label: t('flow.vpnLabel'), variant: 'safe' },
-        draggable: false,
-        selectable: false,
-      },
-      {
-        id: 'vpn-device',
-        type: 'flowNode',
-        position: { x: startX, y: row2Y },
-        data: { label: t('flow.vpnDevice'), description: t('flow.vpnDeviceDesc'), icon: 'smartphone', variant: 'default' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'vpn-encrypt',
-        type: 'flowNode',
-        position: { x: startX + gap, y: row2Y },
-        data: { label: t('flow.vpnEncrypt'), description: t('flow.vpnEncryptDesc'), icon: 'lock', variant: 'primary' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'vpn-isp',
-        type: 'flowNode',
-        position: { x: startX + gap * 2, y: row2Y },
-        data: { label: t('flow.vpnIsp'), description: t('flow.vpnIspDesc'), icon: 'shieldCheck', variant: 'success' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'vpn-server',
-        type: 'flowNode',
-        position: { x: startX + gap * 3, y: row2Y },
-        data: { label: t('flow.vpnServer'), description: t('flow.vpnServerDesc'), icon: 'server', variant: 'primary' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-      {
-        id: 'vpn-internet',
-        type: 'flowNode',
-        position: { x: startX + gap * 4, y: row2Y },
-        data: { label: t('flow.vpnInternet'), description: t('flow.vpnInternetDesc'), icon: 'globe', variant: 'success' as const },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      },
-    ];
-  }, [t, isMobile]);
-
-  const edges: Edge[] = useMemo(
-    () => [
-      // Row 1 edges (danger — red, static dashed)
-      {
-        id: 'no-device-request',
-        source: 'no-device',
-        target: 'no-request',
-        style: { stroke: DANGER_DIM, strokeWidth: 1.5, strokeDasharray: '6 4' },
-        markerEnd: { type: MarkerType.ArrowClosed, color: DANGER_DIM, width: 14, height: 14 },
-      },
-      {
-        id: 'no-request-isp',
-        source: 'no-request',
-        target: 'no-isp',
-        style: { stroke: DANGER, strokeWidth: 2, strokeDasharray: '6 4' },
-        markerEnd: { type: MarkerType.ArrowClosed, color: DANGER, width: 14, height: 14 },
-      },
-      {
-        id: 'no-isp-blocked',
-        source: 'no-isp',
-        target: 'no-blocked',
-        style: { stroke: DANGER, strokeWidth: 2, strokeDasharray: '6 4' },
-        markerEnd: { type: MarkerType.ArrowClosed, color: DANGER, width: 14, height: 14 },
-      },
-
-      // Row 2 edges (safe — blue/green, animated)
-      {
-        id: 'vpn-device-encrypt',
-        source: 'vpn-device',
-        target: 'vpn-encrypt',
-        animated: true,
-        style: { stroke: SAFE, strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: SAFE, width: 14, height: 14 },
-      },
-      {
-        id: 'vpn-encrypt-isp',
-        source: 'vpn-encrypt',
-        target: 'vpn-isp',
-        animated: true,
-        style: { stroke: SAFE, strokeWidth: 2.5 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: SAFE, width: 14, height: 14 },
-      },
-      {
-        id: 'vpn-isp-server',
-        source: 'vpn-isp',
-        target: 'vpn-server',
-        animated: true,
-        style: { stroke: SAFE_ALT, strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: SAFE_ALT, width: 14, height: 14 },
-      },
-      {
-        id: 'vpn-server-internet',
-        source: 'vpn-server',
-        target: 'vpn-internet',
-        animated: true,
-        style: { stroke: SAFE_ALT, strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: SAFE_ALT, width: 14, height: 14 },
-      },
-    ],
-    [t],
-  );
-
-  const onInit = useCallback((instance: { fitView: () => void }) => {
-    setTimeout(() => instance.fitView(), 100);
-  }, []);
 
   return (
-    <div className="h-[280px] w-full md:h-[380px]">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onInit={onInit}
-        fitView
-        fitViewOptions={{ padding: isMobile ? 0.08 : 0.2 }}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={false}
-        panOnDrag={isMobile}
-        panOnScroll={isMobile}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
-        preventScrolling={false}
-        minZoom={0.4}
-        maxZoom={1}
-        proOptions={{ hideAttribution: true }}
-      />
+    <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+      {/* ── Without VPN ── */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.05 }}
+        variants={colV}
+      >
+        <motion.div variants={cardV} className="mb-6">
+          <span className="inline-flex items-center rounded-full border border-red-200 bg-red-50 px-4 py-1.5 text-sm font-semibold text-red-600 dark:border-red-800/40 dark:bg-red-950/40 dark:text-red-400">
+            {t('flow.withoutVpn')}
+          </span>
+        </motion.div>
+
+        <FlowCard variant="neutral" icon={Smartphone}
+          title={t('flow.noVpnDevice')} description={t('flow.noVpnDeviceDesc')} />
+        <Connector color="blue" />
+
+        <FlowCard variant="neutral" icon={Building2}
+          title={t('flow.noVpnIsp')} description={t('flow.noVpnIspDesc')} />
+        <Connector color="blue" />
+
+        <FlowCard variant="warning" icon={ScanSearch}
+          title={t('flow.noVpnDpi')} description={t('flow.noVpnDpiDesc')} />
+        <Connector color="red" />
+
+        <FlowCard variant="danger" icon={Ban}
+          title={t('flow.noVpnBlocked')} description={t('flow.noVpnBlockedDesc')} />
+      </motion.div>
+
+      {/* ── With VPN ── */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.05 }}
+        variants={colV}
+      >
+        <motion.div variants={cardV} className="mb-6">
+          <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-600 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-400">
+            {t('flow.withVpn')}
+          </span>
+        </motion.div>
+
+        <FlowCard variant="safe" icon={ShieldCheck}
+          title={t('flow.vpnDevice')} description={t('flow.vpnDeviceDesc')} />
+        <Connector color="green" />
+
+        <FlowCard variant="safe" icon={Lock}
+          title={t('flow.vpnTunnel')} description={t('flow.vpnTunnelDesc')} />
+        <Connector color="green" />
+
+        <FlowCard variant="safe" icon={Building2}
+          title={t('flow.vpnIsp')} description={t('flow.vpnIspDesc')} />
+        <Connector color="green" />
+
+        <FlowCard variant="safe" icon={ScanSearch}
+          title={t('flow.vpnDpi')} description={t('flow.vpnDpiDesc')} />
+
+        {/* Branch: protocol masquerading */}
+        <motion.div variants={branchV} className="my-2 ml-8 flex items-stretch gap-3">
+          <div className="w-0.5 shrink-0 rounded-full bg-violet-300 dark:bg-violet-700" />
+          <div className={`flex-1 rounded-xl border p-4 ${vs.info.card}`}>
+            <div className="flex gap-3">
+              <div className={`shrink-0 self-start rounded-lg p-2 ${vs.info.icon}`}>
+                <Eye className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold">{t('flow.vpnMasquerade')}</h4>
+                <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                  {t('flow.vpnMasqueradeDesc')}
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <Connector color="green" />
+
+        <FlowCard variant="safe" icon={Server}
+          title={t('flow.vpnServer')} description={t('flow.vpnServerDesc')} />
+        <Connector color="green" />
+
+        <FlowCard variant="success" icon={Globe}
+          title={t('flow.vpnInternet')} description={t('flow.vpnInternetDesc')} />
+      </motion.div>
     </div>
   );
 }

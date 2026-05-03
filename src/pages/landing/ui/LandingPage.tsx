@@ -14,7 +14,6 @@ import {
 import { useTranslation } from '@/shared/lib/i18n';
 import { useLocalePath } from '@/shared/lib/navigation';
 import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { AccordionItem } from '@/shared/ui/accordion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from '@/shared/ui/animate-on-scroll';
@@ -95,11 +94,13 @@ function HeroBenefitsBlock() {
         <StaggerContainer id="landing-stats" className="relative mx-auto grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4" stagger={0.1}>
           {stats.map(({ value, label, icon: Icon }) => (
             <StaggerItem key={label} preset="scale-in">
-              <div className="group bg-card/60 border-border/40 flex flex-col items-center gap-1.5 rounded-xl border p-4 backdrop-blur-md transition-all hover:border-primary/30 hover:shadow-md hover:shadow-primary/5">
-                <Icon className="text-primary mb-1 h-5 w-5" />
-                <span className="text-xl font-bold md:text-2xl">{value}</span>
-                <span className="text-muted-foreground text-xs">{label}</span>
-              </div>
+              <NeonCard glowColor="#5AC8D8" className="rounded-xl">
+                <div className="flex flex-col items-center gap-1.5 p-4 backdrop-blur-md">
+                  <Icon className="text-primary mb-1 h-5 w-5" />
+                  <span className="text-xl font-bold md:text-2xl">{value}</span>
+                  <span className="text-muted-foreground text-xs">{label}</span>
+                </div>
+              </NeonCard>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -197,16 +198,12 @@ function FlowSection() {
 
   return (
     <section className="py-20 md:py-28">
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-7xl px-6">
         <AnimateOnScroll id="landing-flow-title" preset="fade-up" className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold md:text-4xl">{t('flow.title')}</h2>
           <p className="text-muted-foreground text-lg">{t('flow.subtitle')}</p>
         </AnimateOnScroll>
-        <AnimateOnScroll id="landing-flow-diagram" preset="scale-in" duration={0.6}>
-          <div className="bg-card/50 overflow-hidden rounded-2xl border border-border/50 backdrop-blur-sm">
-            <VpnFlowDiagram />
-          </div>
-        </AnimateOnScroll>
+        <VpnFlowDiagram />
       </div>
     </section>
   );
@@ -252,12 +249,8 @@ function PricingTeaser({ pricingPath }: { pricingPath: string }) {
         <StaggerContainer id="landing-pricing" className="grid gap-6 md:grid-cols-3" stagger={0.12}>
           {plans.map(({ name, period, price, devices, tag, highlight }) => (
             <StaggerItem key={name} preset="scale-in">
-              <Card
-                className={`h-full border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
-                  highlight ? 'border-primary/30 shadow-lg shadow-primary/5' : 'border-border/50 shadow-sm'
-                }`}
-              >
-                <CardContent className="p-6 text-center">
+              <NeonCard glowColor={highlight ? '#3B9BF5' : '#5AC8D8'}>
+                <div className="p-6 text-center">
                   {tag ? (
                     <Badge variant={highlight ? 'default' : 'secondary'} className="mb-4 rounded-full">
                       {tag}
@@ -279,8 +272,8 @@ function PricingTeaser({ pricingPath }: { pricingPath: string }) {
                   >
                     <a href={pricingPath}>{t('hero.cta')}</a>
                   </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </NeonCard>
             </StaggerItem>
           ))}
         </StaggerContainer>

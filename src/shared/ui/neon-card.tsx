@@ -12,22 +12,23 @@ export const NeonCard = React.forwardRef<HTMLDivElement, NeonCardProps>(
     return (
       <div
         ref={ref}
-        className={cn('neon-card group relative overflow-hidden rounded-2xl h-full', className)}
+        className={cn('neon-card group relative overflow-hidden rounded-2xl p-px h-full', className)}
         style={{ '--neon-color': glowColor } as React.CSSProperties}
         {...props}
       >
-        {/* Animated border */}
-        <div className="neon-card-border pointer-events-none absolute inset-0 rounded-2xl" />
+        {/* Animated border — fills entire area, visible only through 1px padding gap */}
+        <div className="neon-card-border pointer-events-none absolute inset-0 rounded-[inherit]" />
 
         {/* Inner glow on hover */}
-        <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           style={{
             background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, ${glowColor} 6%, transparent), transparent 40%)`,
           }}
         />
 
-        {/* Content */}
-        <div className="bg-card relative h-full rounded-2xl border border-transparent">
+        {/* Content — sits inside p-px, leaving 1px ring for the neon border */}
+        <div className="bg-card relative h-full rounded-[inherit]">
           {children}
         </div>
       </div>

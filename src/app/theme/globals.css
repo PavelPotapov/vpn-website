@@ -100,9 +100,6 @@
 /* ── Neon card — animated border glow ── */
 @layer components {
   .neon-card-border {
-    padding: 1px;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
     background: conic-gradient(
       from var(--neon-angle, 0deg),
       transparent 0%,
@@ -131,6 +128,17 @@
     syntax: "<angle>";
     initial-value: 0deg;
     inherits: false;
+  }
+
+  /* Animated flowing dashes for VPN flow diagram */
+  @keyframes flow-down {
+    to {
+      stroke-dashoffset: -12;
+    }
+  }
+
+  .animate-flow-down {
+    animation: flow-down 0.6s linear infinite;
   }
 
   /* Glow shadow for CTA buttons */
