@@ -1,3 +1,6 @@
+import path from 'path';
+import { pathToFileURL } from 'url';
+
 import compression from 'compression';
 import express from 'express';
 
@@ -9,8 +12,10 @@ async function startServer() {
     app.use(express.static('build/client', { maxAge: '1y', immutable: true }));
     app.use(express.static('build/client'));
 
-    const { createApp } = await import('./app.js');
-    app.use(createApp());
+    const buildPath = pathToFileURL(path.resolve('build/server/index.js')).href;
+    const build = await import(/* @vite-ignore */ buildPath);
+    const { createProdApp } = await import('./app.js');
+    app.use(createProdApp(build));
   } else {
     const viteModule = await import('vite');
     const vite = await viteModule.createServer({
