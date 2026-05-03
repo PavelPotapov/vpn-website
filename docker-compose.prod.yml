@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    container_name: vpn-website
+    restart: unless-stopped
+    ports:
+      - "5391:5391"
+    environment:
+      NODE_ENV: production
+      PORT: 5391

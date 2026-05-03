@@ -1,0 +1,10 @@
+node_modules
+build
+.react-router
+.git
+.husky
+docs
+*.md
+.env
+.env.*
+!.env.example
