@@ -174,5 +174,38 @@
   "language": {
     "english": "Английский",
     "russian": "Русский"
+  },
+  "account": {
+    "menu": {
+      "cabinet": "Личный кабинет",
+      "logout": "Выйти"
+    },
+    "login": {
+      "title": "Вход в личный кабинет",
+      "subtitle": "Авторизация через Telegram",
+      "telegram": "Войти через Telegram",
+      "openBot": "Открыть Telegram-бота",
+      "code": "Код из бота",
+      "confirm": "Подтвердить код",
+      "wait": "Подождите…",
+      "checking": "Проверка…",
+      "startError": "Не удалось начать вход. Попробуйте ещё раз.",
+      "codeError": "Неверный или истёкший код."
+    },
+    "dashboard": {
+      "subscription": "Подписка",
+      "active": "Активна",
+      "inactive": "Неактивна",
+      "upToDevices": "Устройств: до {{count}}",
+      "validUntil": "Действует до: {{date}}",
+      "devices": "Устройства",
+      "connected": "подключено",
+      "notConnected": "не подключено",
+      "thisDevice": "это устройство",
+      "unlink": "Отвязать",
+      "noDevices": "Нет устройств",
+      "loading": "Загрузка…",
+      "loadError": "Не удалось загрузить данные аккаунта."
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@/shared/lib/i18n';
 import { useNavigate } from '@/shared/lib/navigation';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
@@ -9,6 +10,7 @@ import { telegramStart, telegramVerify, type TelegramStart } from '../api/authAp
 import { useAuthStore } from '../model/authStore';
 
 export function LoginForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const setToken = useAuthStore((s) => s.setToken);
 
@@ -23,7 +25,7 @@ export function LoginForm() {
     try {
       setStart(await telegramStart());
     } catch {
-      setError('Не удалось начать вход. Попробуйте ещё раз.');
+      setError(t('account.login.startError'));
     } finally {
       setIsLoading(false);
     }
@@ -37,7 +39,7 @@ export function LoginForm() {
       setToken(tokens.access_token);
       navigate('/account');
     } catch {
-      setError('Неверный или истёкший код.');
+      setError(t('account.login.codeError'));
     } finally {
       setIsLoading(false);
     }
@@ -46,25 +48,25 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Вход в личный кабинет</CardTitle>
-        <CardDescription>Авторизация через Telegram</CardDescription>
+        <CardTitle>{t('account.login.title')}</CardTitle>
+        <CardDescription>{t('account.login.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {start === null ? (
           <Button className="w-full" disabled={isLoading} onClick={handleStart}>
-            {isLoading ? 'Подождите…' : 'Войти через Telegram'}
+            {isLoading ? t('account.login.wait') : t('account.login.telegram')}
           </Button>
         ) : (
           <div className="space-y-4">
             <a className="block" href={start.bot_link} rel="noreferrer" target="_blank">
               <Button className="w-full" variant="secondary">
-                Открыть Telegram-бота
+                {t('account.login.openBot')}
               </Button>
             </a>
             <p className="text-muted-foreground text-sm">{start.instruction}</p>
             <Input
               inputMode="numeric"
-              placeholder="Код из бота"
+              placeholder={t('account.login.code')}
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
@@ -73,7 +75,7 @@ export function LoginForm() {
               disabled={isLoading || code.trim().length === 0}
               onClick={handleVerify}
             >
-              {isLoading ? 'Проверка…' : 'Подтвердить код'}
+              {isLoading ? t('account.login.checking') : t('account.login.confirm')}
             </Button>
           </div>
         )}

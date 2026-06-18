@@ -174,5 +174,38 @@
   "language": {
     "english": "English",
     "russian": "Russian"
+  },
+  "account": {
+    "menu": {
+      "cabinet": "My account",
+      "logout": "Log out"
+    },
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Sign in with Telegram",
+      "telegram": "Sign in with Telegram",
+      "openBot": "Open the Telegram bot",
+      "code": "Code from the bot",
+      "confirm": "Confirm code",
+      "wait": "Please wait…",
+      "checking": "Checking…",
+      "startError": "Couldn't start sign-in. Please try again.",
+      "codeError": "Invalid or expired code."
+    },
+    "dashboard": {
+      "subscription": "Subscription",
+      "active": "Active",
+      "inactive": "Inactive",
+      "upToDevices": "Devices: up to {{count}}",
+      "validUntil": "Valid until: {{date}}",
+      "devices": "Devices",
+      "connected": "connected",
+      "notConnected": "not connected",
+      "thisDevice": "this device",
+      "unlink": "Unlink",
+      "noDevices": "No devices",
+      "loading": "Loading…",
+      "loadError": "Couldn't load account data."
+    }
   }
 }

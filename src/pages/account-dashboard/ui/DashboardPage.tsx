@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { apiClient, AUTH_TOKEN_KEY } from '@/shared/api';
+import { useTranslation } from '@/shared/lib/i18n';
 import { useNavigate } from '@/shared/lib/navigation';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
@@ -38,6 +39,7 @@ interface DeviceList {
 }
 
 export function DashboardPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [me, setMe] = useState<Me | null>(null);
@@ -63,7 +65,7 @@ export function DashboardPage() {
         setSubscription(null);
       }
     } catch {
-      setError('Не удалось загрузить данные аккаунта.');
+      setError(t('account.dashboard.loadError'));
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +92,9 @@ export function DashboardPage() {
   }
 
   if (isLoading) {
-    return <div className="text-muted-foreground p-8 text-center">Загрузка…</div>;
+    return (
+      <div className="text-muted-foreground p-8 text-center">{t('account.dashboard.loading')}</div>
+    );
   }
 
   if (error !== null) {
@@ -104,21 +108,27 @@ export function DashboardPage() {
     <div className="mx-auto max-w-3xl space-y-6 p-4 md:p-8">
       <Card>
         <CardHeader>
-          <CardTitle>Подписка</CardTitle>
+          <CardTitle>{t('account.dashboard.subscription')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="flex items-center gap-2">
             <Badge>{planName}</Badge>
-            <span className="text-sm">{isActive ? 'Активна' : 'Неактивна'}</span>
+            <span className="text-sm">
+              {isActive ? t('account.dashboard.active') : t('account.dashboard.inactive')}
+            </span>
           </div>
           {subscription?.plan && (
             <p className="text-muted-foreground text-sm">
-              Устройств: до {subscription.plan.max_devices}
+              {t('account.dashboard.upToDevices', {
+                count: subscription.plan.max_devices,
+              })}
             </p>
           )}
           {subscription?.expires_at && (
             <p className="text-muted-foreground text-sm">
-              Действует до: {new Date(subscription.expires_at).toLocaleDateString()}
+              {t('account.dashboard.validUntil', {
+                date: new Date(subscription.expires_at).toLocaleDateString(),
+              })}
             </p>
           )}
         </CardContent>
@@ -127,7 +137,7 @@ export function DashboardPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            Устройства
+            {t('account.dashboard.devices')}
             {deviceList ? ` (${deviceList.count}/${deviceList.max_devices})` : ''}
           </CardTitle>
         </CardHeader>
@@ -138,19 +148,21 @@ export function DashboardPage() {
                 <div>
                   <span className="font-medium capitalize">{d.platform}</span>
                   <span className="text-muted-foreground ml-2 text-xs">
-                    {d.connected ? 'подключено' : 'не подключено'}
-                    {d.is_current ? ' · это устройство' : ''}
+                    {d.connected
+                      ? t('account.dashboard.connected')
+                      : t('account.dashboard.notConnected')}
+                    {d.is_current ? ` · ${t('account.dashboard.thisDevice')}` : ''}
                   </span>
                 </div>
                 {!d.is_current && (
                   <Button size="sm" variant="ghost" onClick={() => handleUnlink(d.id)}>
-                    Отвязать
+                    {t('account.dashboard.unlink')}
                   </Button>
                 )}
               </div>
             ))
           ) : (
-            <p className="text-muted-foreground text-sm">Нет устройств</p>
+            <p className="text-muted-foreground text-sm">{t('account.dashboard.noDevices')}</p>
           )}
         </CardContent>
       </Card>

@@ -1,13 +1,14 @@
+import { Menu, X, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Menu, X, Shield } from 'lucide-react';
 
 import { useTranslation } from '@/shared/lib/i18n';
 import { useLocalePath } from '@/shared/lib/navigation';
 import { Button } from '@/shared/ui/button';
 
-import { ThemeToggle } from './ThemeToggle';
+import { AccountNav } from './AccountNav';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Header() {
   const { t } = useTranslation();
@@ -43,6 +44,7 @@ export function Header() {
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
+          <AccountNav />
           <Button size="sm" className="rounded-xl">
             {t('hero.cta')}
           </Button>
@@ -74,6 +76,7 @@ export function Header() {
           <div className="mt-4 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
+            <AccountNav />
           </div>
           <Button className="mt-4 w-full rounded-xl" onClick={() => setMobileOpen(false)}>
             {t('hero.cta')}
