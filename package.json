@@ -89,7 +89,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@go-task/cli"
+      "@go-task/cli",
+      "esbuild"
     ]
   }
 }

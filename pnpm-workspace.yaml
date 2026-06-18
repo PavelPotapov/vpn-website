@@ -1,1 +1,8 @@
 packages: []
+
+# Разрешённые build-скрипты зависимостей. В свежих pnpm этот список читается
+# именно отсюда (а не из package.json), иначе `pnpm install` падает с
+# ERR_PNPM_IGNORED_BUILDS. esbuild и @go-task/cli — легитимные постинсталлы.
+onlyBuiltDependencies:
+  - '@go-task/cli'
+  - esbuild
