@@ -23,3 +23,14 @@ export async function telegramVerify(code: string): Promise<AuthTokens> {
   const { data } = await apiClient.post<AuthTokens>('/api/v2/auth/telegram/verify', { code });
   return data;
 }
+
+/** Начинает email-авторизацию: бэкенд отправляет 6-значный код на почту. */
+export async function emailStart(email: string): Promise<void> {
+  await apiClient.post('/api/v2/auth/email/start', { email });
+}
+
+/** Проверяет код из письма и возвращает JWT-токены. */
+export async function emailVerify(email: string, code: string): Promise<AuthTokens> {
+  const { data } = await apiClient.post<AuthTokens>('/api/v2/auth/email/verify', { email, code });
+  return data;
+}
