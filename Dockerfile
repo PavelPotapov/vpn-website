@@ -1,6 +1,9 @@
 FROM node:22-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Пин pnpm на v10: pnpm@latest уехал на v11, где strictDepBuilds=true роняет
+# install из-за пропущенных build-скриптов (ERR_PNPM_IGNORED_BUILDS).
+# v10 совместим с lockfileVersion 9.0 и собирает проект как раньше.
+RUN corepack enable && corepack prepare pnpm@10 --activate
 
 WORKDIR /app
 

@@ -1,8 +1,10 @@
 packages: []
 
-# Разрешённые build-скрипты зависимостей. В свежих pnpm этот список читается
-# именно отсюда (а не из package.json), иначе `pnpm install` падает с
-# ERR_PNPM_IGNORED_BUILDS. esbuild и @go-task/cli — легитимные постинсталлы.
+# pnpm v11 по умолчанию ставит strictDepBuilds=true и роняет install
+# (ERR_PNPM_IGNORED_BUILDS), если у зависимостей есть пропущенные build-скрипты.
+# На pnpm 10 это был лишь warning и сборка проходила. Возвращаем прежнее
+# поведение и заодно явно разрешаем нужные скрипты.
+strictDepBuilds: false
 onlyBuiltDependencies:
   - '@go-task/cli'
   - esbuild
