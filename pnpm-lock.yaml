@@ -62,6 +62,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.2.1
+      http-proxy-middleware:
+        specifier: ^4.1.1
+        version: 4.1.1
       i18next:
         specifier: ^25.8.13
         version: 25.10.10(typescript@5.9.3)
@@ -3115,9 +3118,16 @@ packages:
     resolution: {integrity: sha512-7pose0uGgrCJeH2Qh4JcNhWZp3u/oNrWjNYDK4ydOLxOpTw8V8ogHFAmkz0VWq96JBFj4umVJpvmQi287rSYLg==}
     engines: {node: '>= 14'}
 
+  http-proxy-middleware@4.1.1:
+    resolution: {integrity: sha512-KX5ZofGXLFXqFAkQoOWZ+rTtaLTut7m0gyL+QzJrdejtIZ+F4bPPDoe7reISg2+v0CAz5OfVwEJEhty7X+e57g==}
+    engines: {node: ^22.15.0 || ^24.0.0 || >=26.0.0}
+
   https-proxy-agent@8.0.0:
     resolution: {integrity: sha512-YYeW+iCnAS3xhvj2dvVoWgsbca3RfQy/IlaNHHOtDmU0jMqPI9euIq3Y9BJETdxk16h9NHHCKqp/KB9nIMStCQ==}
     engines: {node: '>= 14'}
+
+  httpxy@0.5.3:
+    resolution: {integrity: sha512-SMS9V6Sn7VWaS11lYhoAr0ceoaiolTWf4jYdJn0NJhCdKMu9R2H9Fh0LBDWBHQF6HRLI1PmaePYsjanSpE5PEw==}
 
   husky@9.1.7:
     resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
@@ -3214,6 +3224,10 @@ packages:
   is-plain-obj@1.1.0:
     resolution: {integrity: sha512-yvkRyxmFKEOQ4pNXCmJG5AEQNlXJS5LaONXo5/cLdTZdWvsZ1ioJEonLGAosKlMWE8lwUy/bJzMjcw8az73+Fg==}
     engines: {node: '>=0.10.0'}
+
+  is-plain-obj@4.1.0:
+    resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
+    engines: {node: '>=12'}
 
   is-promise@4.0.0:
     resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
@@ -7826,12 +7840,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  http-proxy-middleware@4.1.1:
+    dependencies:
+      debug: 4.4.3
+      httpxy: 0.5.3
+      is-glob: 4.0.3
+      is-plain-obj: 4.1.0
+      micromatch: 4.0.8
+    transitivePeerDependencies:
+      - supports-color
+
   https-proxy-agent@8.0.0:
     dependencies:
       agent-base: 8.0.0
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
+
+  httpxy@0.5.3: {}
 
   husky@9.1.7: {}
 
@@ -7895,6 +7921,8 @@ snapshots:
   is-obj@2.0.0: {}
 
   is-plain-obj@1.1.0: {}
+
+  is-plain-obj@4.1.0: {}
 
   is-promise@4.0.0: {}
 

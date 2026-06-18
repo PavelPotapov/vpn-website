@@ -1,8 +1,23 @@
 import { createRequestHandler } from '@react-router/express';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+
+// Проксируем /api/* на бэкенд, чтобы браузер ходил только в свой origin
+// (CORS не нужен). Адрес задаётся через BACKEND_URL; по умолчанию — прод.
+function mountApiProxy(app: express.Express) {
+  app.use(
+    createProxyMiddleware({
+      pathFilter: '/api',
+      target: process.env.BACKEND_URL ?? 'https://imoproxy.duckdns.org',
+      changeOrigin: true,
+    }),
+  );
+}
 
 export function createApp() {
   const app = express();
+
+  mountApiProxy(app);
 
   app.use(
     createRequestHandler({
@@ -17,6 +32,8 @@ export function createApp() {
 
 export function createProdApp(build: unknown) {
   const app = express();
+
+  mountApiProxy(app);
 
   app.use(
     createRequestHandler({

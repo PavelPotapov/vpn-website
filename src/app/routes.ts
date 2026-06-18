@@ -7,5 +7,10 @@ export default [
       route('pricing', 'routes/pricing.tsx'),
       route('features', 'routes/features.tsx'),
     ]),
+    // Личный кабинет — своя оболочка (без публичных Header/Footer), SSR (не в prerender)
+    layout('routes/cabinetLayout.tsx', [
+      route('account', 'routes/account.tsx'),
+      route('account/login', 'routes/accountLogin.tsx'),
+    ]),
   ]),
 ] satisfies RouteConfig;
