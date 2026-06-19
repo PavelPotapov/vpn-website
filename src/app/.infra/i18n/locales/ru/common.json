@@ -219,7 +219,13 @@
       "appLoginGenerate": "Сгенерировать код",
       "appLoginRegenerate": "Новый код",
       "appLoginWait": "Генерация…",
-      "appLoginExpires": "Действует ещё {{time}}"
+      "appLoginExpires": "Действует ещё {{time}}",
+      "dangerZone": "Опасная зона",
+      "logoutAll": "Выйти на всех устройствах",
+      "deleteAccount": "Удалить аккаунт",
+      "deleteConfirm": "Аккаунт, подписка и доступ будут удалены безвозвратно. Отменить нельзя.",
+      "deleteYes": "Да, удалить",
+      "cancel": "Отмена"
     }
   }
 }

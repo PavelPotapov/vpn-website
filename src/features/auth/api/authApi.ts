@@ -27,7 +27,17 @@ export async function emailVerify(email: string, code: string): Promise<void> {
   await apiClient.post('/bff/auth/email/verify', { email, code });
 }
 
-/** Выход: сервер чистит куки. */
+/** Выход: сервер отзывает сессию и чистит куки. */
 export async function logout(): Promise<void> {
   await apiClient.post('/bff/auth/logout');
+}
+
+/** Выйти на всех устройствах (отзыв всех сессий пользователя). */
+export async function logoutAll(): Promise<void> {
+  await apiClient.post('/api/v2/auth/logout-all');
+}
+
+/** Удалить аккаунт навсегда (отзыв туннелей + удаление данных). */
+export async function deleteAccount(): Promise<void> {
+  await apiClient.delete('/api/v2/me');
 }

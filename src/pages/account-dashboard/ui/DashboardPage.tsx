@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useAuthStore } from '@/features/auth';
+import { deleteAccount, logoutAll, useAuthStore } from '@/features/auth';
 
 import { apiClient, isApiError } from '@/shared/api';
 import { useTranslation } from '@/shared/lib/i18n';
@@ -45,6 +45,10 @@ export function DashboardPage() {
   const navigate = useNavigate();
   const isAuthed = useAuthStore((s) => s.isAuthed);
   const setAuthed = useAuthStore((s) => s.setAuthed);
+  const logoutLocal = useAuthStore((s) => s.logout);
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isBusy, setIsBusy] = useState(false);
 
   const [me, setMe] = useState<Me | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -129,6 +133,29 @@ export function DashboardPage() {
     } finally {
       setIsGenerating(false);
     }
+  }
+
+  async function handleLogoutAll() {
+    setIsBusy(true);
+    try {
+      await logoutAll();
+    } catch {
+      // даже если не прошло — всё равно выходим локально
+    }
+    await logoutLocal();
+    navigate('/');
+  }
+
+  async function handleDelete() {
+    setIsBusy(true);
+    try {
+      await deleteAccount();
+    } catch {
+      setIsBusy(false);
+      return; // остаёмся на странице
+    }
+    await logoutLocal();
+    navigate('/');
   }
 
   if (isLoading) {
@@ -235,6 +262,36 @@ export function DashboardPage() {
                 ? t('account.dashboard.appLoginRegenerate')
                 : t('account.dashboard.appLoginGenerate')}
           </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('account.dashboard.dangerZone')}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div>
+            <Button variant="outline" disabled={isBusy} onClick={() => void handleLogoutAll()}>
+              {t('account.dashboard.logoutAll')}
+            </Button>
+          </div>
+          {!confirmDelete ? (
+            <Button variant="destructive" disabled={isBusy} onClick={() => setConfirmDelete(true)}>
+              {t('account.dashboard.deleteAccount')}
+            </Button>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-destructive text-sm">{t('account.dashboard.deleteConfirm')}</p>
+              <div className="flex gap-2">
+                <Button variant="destructive" disabled={isBusy} onClick={() => void handleDelete()}>
+                  {t('account.dashboard.deleteYes')}
+                </Button>
+                <Button variant="ghost" disabled={isBusy} onClick={() => setConfirmDelete(false)}>
+                  {t('account.dashboard.cancel')}
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

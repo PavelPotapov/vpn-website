@@ -219,7 +219,13 @@
       "appLoginGenerate": "Generate code",
       "appLoginRegenerate": "New code",
       "appLoginWait": "Generating…",
-      "appLoginExpires": "Valid for {{time}}"
+      "appLoginExpires": "Valid for {{time}}",
+      "dangerZone": "Danger zone",
+      "logoutAll": "Log out everywhere",
+      "deleteAccount": "Delete account",
+      "deleteConfirm": "Your account, subscription and access will be permanently deleted. This can't be undone.",
+      "deleteYes": "Yes, delete",
+      "cancel": "Cancel"
     }
   }
 }

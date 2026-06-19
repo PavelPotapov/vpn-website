@@ -107,8 +107,16 @@ function mountBffAuth(app: express.Express) {
     res.json({ ok: true });
   });
 
-  // Выход — чистим куки. (Серверный отзыв сессии добавим, когда появится /auth/logout.)
-  app.post('/bff/auth/logout', (_req, res) => {
+  // Выход — отзываем серверную сессию по refresh-куке и чистим куки.
+  app.post('/bff/auth/logout', async (req, res) => {
+    const rt = parseCookies(req)[RT_COOKIE];
+    if (rt) {
+      try {
+        await backendPost('/api/v2/auth/logout', { refresh_token: rt });
+      } catch {
+        // не критично — куки всё равно чистим
+      }
+    }
     clearAuthCookies(res);
     res.json({ ok: true });
   });
