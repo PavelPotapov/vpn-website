@@ -2,62 +2,30 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
 import { createApiError } from './apiError';
 
-/** Ключи localStorage для токенов. */
-export const AUTH_TOKEN_KEY = 'vpn-auth-token';
-export const REFRESH_TOKEN_KEY = 'vpn-refresh-token';
+/** Имя читаемой JS флаг-куки «залогинен». Сами токены — в httpOnly-куках, JS их не видит. */
+export const AUTH_FLAG_COOKIE = 'vpn_auth';
 
-function getStored(key: string): string | null {
-  if (typeof window === 'undefined') return null;
-  return window.localStorage.getItem(key);
-}
-
-function persistTokens(accessToken: string, refreshToken?: string | null) {
-  if (typeof window === 'undefined') return;
-  window.localStorage.setItem(AUTH_TOKEN_KEY, accessToken);
-  if (refreshToken) window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-}
-
-function clearTokens() {
-  if (typeof window === 'undefined') return;
-  window.localStorage.removeItem(AUTH_TOKEN_KEY);
-  window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+/** Прочитать флаг авторизации из куки (SSR-safe). */
+export function readAuthFlag(): boolean {
+  if (typeof document === 'undefined') return false;
+  return document.cookie.split(';').some((c) => c.trim().startsWith(`${AUTH_FLAG_COOKIE}=1`));
 }
 
 /**
- * Настроенный инстанс Axios. Запросы идут в свой origin под `/api`, который
- * Express-сервер проксирует на бэкенд (поэтому CORS не нужен). Bearer-токен
- * читается из localStorage на каждый запрос; на 401 — авто-обновление токена.
+ * Axios-инстанс. Запросы идут в свой origin под `/api`; Express проксирует их на
+ * бэкенд и подставляет access-токен из httpOnly-куки. На 401 — авто-refresh через BFF.
  */
-export const apiClient = axios.create();
+export const apiClient = axios.create({ withCredentials: true });
 
-apiClient.interceptors.request.use((config) => {
-  const token = getStored(AUTH_TOKEN_KEY);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Single-flight: параллельные 401 ждут один общий refresh.
+let refreshInFlight: Promise<boolean> | null = null;
 
-// Single-flight: параллельные 401 ждут один общий запрос обновления токена.
-let refreshInFlight: Promise<string | null> | null = null;
-
-async function refreshAccessToken(): Promise<string | null> {
-  const refreshToken = getStored(REFRESH_TOKEN_KEY);
-  if (!refreshToken) return null;
-
+async function refreshSession(): Promise<boolean> {
   if (!refreshInFlight) {
     refreshInFlight = axios
-      .post<{ access_token: string; refresh_token: string }>('/api/v2/auth/refresh', {
-        refresh_token: refreshToken,
-      })
-      .then((res) => {
-        persistTokens(res.data.access_token, res.data.refresh_token);
-        return res.data.access_token;
-      })
-      .catch(() => {
-        clearTokens();
-        return null;
-      })
+      .post('/bff/auth/refresh', null, { withCredentials: true })
+      .then(() => true)
+      .catch(() => false)
       .finally(() => {
         refreshInFlight = null;
       });
@@ -71,15 +39,13 @@ apiClient.interceptors.response.use(
     const original = error.config as
       | (InternalAxiosRequestConfig & { _retried?: boolean })
       | undefined;
-    const isRefreshCall = original?.url?.includes('/auth/refresh') ?? false;
+    const isAuthCall = original?.url?.includes('/bff/auth/') ?? false;
 
-    // На протухший access (401) один раз обновляем токен и повторяем запрос.
-    if (error.response?.status === 401 && original && !original._retried && !isRefreshCall) {
+    // На протухший access (401) один раз обновляем токен через BFF и повторяем запрос.
+    if (error.response?.status === 401 && original && !original._retried && !isAuthCall) {
       original._retried = true;
-      const newToken = await refreshAccessToken();
-      if (newToken) {
-        // Запрос пройдёт заново через request-интерсептор и подхватит свежий токен.
-        return apiClient(original);
+      if (await refreshSession()) {
+        return apiClient(original); // токен обновлён в куке — запрос пройдёт заново
       }
     }
 

@@ -21,7 +21,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function LoginForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const setTokens = useAuthStore((s) => s.setTokens);
+  const setAuthed = useAuthStore((s) => s.setAuthed);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,8 +55,8 @@ export function LoginForm() {
     setIsLoading(true);
     resetError();
     try {
-      const tokens = await telegramVerify(code.trim());
-      setTokens(tokens.access_token, tokens.refresh_token);
+      await telegramVerify(code.trim());
+      setAuthed(true);
       navigate('/account');
     } catch {
       setError(t('account.login.codeError'));
@@ -88,8 +88,8 @@ export function LoginForm() {
     setIsLoading(true);
     resetError();
     try {
-      const tokens = await emailVerify(email, emailCode.trim());
-      setTokens(tokens.access_token, tokens.refresh_token);
+      await emailVerify(email, emailCode.trim());
+      setAuthed(true);
       navigate('/account');
     } catch {
       setError(t('account.login.codeError'));

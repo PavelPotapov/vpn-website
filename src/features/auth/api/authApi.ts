@@ -6,31 +6,28 @@ export interface TelegramStart {
   instruction: string;
 }
 
-export interface AuthTokens {
-  access_token: string;
-  refresh_token: string;
-  expires_at: string;
-}
-
-/** Начинает Telegram-авторизацию: возвращает deep-link на бота, где юзер получит код. */
+/** Telegram-вход, шаг 1: deep-link на бота (публичный, без токенов). */
 export async function telegramStart(): Promise<TelegramStart> {
   const { data } = await apiClient.post<TelegramStart>('/api/v2/auth/telegram/start');
   return data;
 }
 
-/** Проверяет 6-значный код из бота и возвращает JWT-токены. */
-export async function telegramVerify(code: string): Promise<AuthTokens> {
-  const { data } = await apiClient.post<AuthTokens>('/api/v2/auth/telegram/verify', { code });
-  return data;
+/** Telegram-вход, шаг 2: код из бота. Токены сервер кладёт в httpOnly-куки. */
+export async function telegramVerify(code: string): Promise<void> {
+  await apiClient.post('/bff/auth/telegram/verify', { code });
 }
 
-/** Начинает email-авторизацию: бэкенд отправляет 6-значный код на почту. */
+/** Email-вход, шаг 1: код на почту (публичный, без токенов). */
 export async function emailStart(email: string): Promise<void> {
   await apiClient.post('/api/v2/auth/email/start', { email });
 }
 
-/** Проверяет код из письма и возвращает JWT-токены. */
-export async function emailVerify(email: string, code: string): Promise<AuthTokens> {
-  const { data } = await apiClient.post<AuthTokens>('/api/v2/auth/email/verify', { email, code });
-  return data;
+/** Email-вход, шаг 2: код из письма. Токены — в httpOnly-куки. */
+export async function emailVerify(email: string, code: string): Promise<void> {
+  await apiClient.post('/bff/auth/email/verify', { email, code });
+}
+
+/** Выход: сервер чистит куки. */
+export async function logout(): Promise<void> {
+  await apiClient.post('/bff/auth/logout');
 }

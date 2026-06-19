@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { apiClient, AUTH_TOKEN_KEY, isApiError } from '@/shared/api';
+import { useAuthStore } from '@/features/auth';
+
+import { apiClient, isApiError } from '@/shared/api';
 import { useTranslation } from '@/shared/lib/i18n';
 import { useNavigate } from '@/shared/lib/navigation';
 import { Badge } from '@/shared/ui/badge';
@@ -41,6 +43,8 @@ interface DeviceList {
 export function DashboardPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isAuthed = useAuthStore((s) => s.isAuthed);
+  const setAuthed = useAuthStore((s) => s.setAuthed);
 
   const [me, setMe] = useState<Me | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -62,6 +66,7 @@ export function DashboardPage() {
       setMe(meRes.data);
     } catch (err) {
       if (isApiError(err) && err.statusCode === 401) {
+        setAuthed(false);
         navigate('/account/login'); // сессия истекла и refresh не помог
         return;
       }
@@ -87,9 +92,7 @@ export function DashboardPage() {
   }
 
   useEffect(() => {
-    const token =
-      typeof window !== 'undefined' ? window.localStorage.getItem(AUTH_TOKEN_KEY) : null;
-    if (token === null) {
+    if (!isAuthed) {
       navigate('/account/login');
       return;
     }

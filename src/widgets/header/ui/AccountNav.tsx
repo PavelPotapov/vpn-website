@@ -20,13 +20,13 @@ export function AccountNav() {
   const { t } = useTranslation();
   const lp = useLocalePath();
   const navigate = useNavigate();
-  const token = useAuthStore((s) => s.token);
-  const clear = useAuthStore((s) => s.clear);
+  const isAuthed = useAuthStore((s) => s.isAuthed);
+  const logout = useAuthStore((s) => s.logout);
 
   // До гидрации не рендерим auth-зависимый UI — иначе SSR-мисматч
   if (!hydrated) return null;
 
-  if (token === null) {
+  if (!isAuthed) {
     return (
       <Button asChild className="rounded-xl" size="sm" variant="ghost">
         <Link to={lp('/account/login')}>{t('nav.login')}</Link>
@@ -34,8 +34,8 @@ export function AccountNav() {
     );
   }
 
-  function handleLogout() {
-    clear();
+  async function handleLogout() {
+    await logout();
     navigate('/');
   }
 
@@ -57,7 +57,7 @@ export function AccountNav() {
             {t('account.menu.cabinet')}
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem onClick={() => void handleLogout()}>
           <LogOut className="mr-2 h-4 w-4" />
           {t('account.menu.logout')}
         </DropdownMenuItem>

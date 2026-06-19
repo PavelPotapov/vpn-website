@@ -1,32 +1,25 @@
 import { create } from 'zustand';
 
-import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/shared/api';
+import { readAuthFlag } from '@/shared/api';
+
+import { logout as logoutRequest } from '../api/authApi';
 
 interface AuthState {
-  token: string | null;
-  setTokens: (accessToken: string, refreshToken: string) => void;
-  clear: () => void;
-}
-
-function readToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return window.localStorage.getItem(AUTH_TOKEN_KEY);
+  isAuthed: boolean;
+  setAuthed: (value: boolean) => void;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: readToken(),
-  setTokens: (accessToken, refreshToken) => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(AUTH_TOKEN_KEY, accessToken);
-      window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  // Источник правды — читаемая флаг-кука vpn_auth (сами токены в httpOnly-куках).
+  isAuthed: readAuthFlag(),
+  setAuthed: (value) => set({ isAuthed: value }),
+  logout: async () => {
+    try {
+      await logoutRequest();
+    } catch {
+      // даже если запрос не прошёл — разлогиниваем локально
     }
-    set({ token: accessToken });
-  },
-  clear: () => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(AUTH_TOKEN_KEY);
-      window.localStorage.removeItem(REFRESH_TOKEN_KEY);
-    }
-    set({ token: null });
+    set({ isAuthed: false });
   },
 }));
