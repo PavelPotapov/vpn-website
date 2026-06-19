@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { apiClient, AUTH_TOKEN_KEY } from '@/shared/api';
+import { apiClient, AUTH_TOKEN_KEY, isApiError } from '@/shared/api';
 import { useTranslation } from '@/shared/lib/i18n';
 import { useNavigate } from '@/shared/lib/navigation';
 import { Badge } from '@/shared/ui/badge';
@@ -55,24 +55,35 @@ export function DashboardPage() {
   async function load() {
     setIsLoading(true);
     setError(null);
+
+    // /me — единственный обязательный запрос (проверка авторизации).
     try {
       const meRes = await apiClient.get<Me>('/api/v2/me');
       setMe(meRes.data);
+    } catch (err) {
+      if (isApiError(err) && err.statusCode === 401) {
+        navigate('/account/login'); // сессия истекла и refresh не помог
+        return;
+      }
+      setError(t('account.dashboard.loadError'));
+      setIsLoading(false);
+      return;
+    }
 
+    // Остальное необязательно: одна осечка не должна гасить весь дашборд.
+    try {
       const devRes = await apiClient.get<DeviceList>('/api/v2/devices');
       setDeviceList(devRes.data);
-
-      try {
-        const subRes = await apiClient.get<Subscription>('/api/v2/subscription');
-        setSubscription(subRes.data);
-      } catch {
-        setSubscription(null);
-      }
     } catch {
-      setError(t('account.dashboard.loadError'));
-    } finally {
-      setIsLoading(false);
+      setDeviceList(null);
     }
+    try {
+      const subRes = await apiClient.get<Subscription>('/api/v2/subscription');
+      setSubscription(subRes.data);
+    } catch {
+      setSubscription(null);
+    }
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -124,7 +135,12 @@ export function DashboardPage() {
   }
 
   if (error !== null) {
-    return <div className="text-destructive p-8 text-center">{error}</div>;
+    return (
+      <div className="mx-auto max-w-3xl space-y-4 p-8 text-center">
+        <p className="text-destructive">{error}</p>
+        <Button onClick={() => void load()}>{t('account.dashboard.retry')}</Button>
+      </div>
+    );
   }
 
   const planName = subscription?.plan?.name ?? me?.plan ?? 'Free';

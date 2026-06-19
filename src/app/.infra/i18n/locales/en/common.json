@@ -213,6 +213,7 @@
       "noDevices": "No devices",
       "loading": "Loading…",
       "loadError": "Couldn't load account data.",
+      "retry": "Try again",
       "appLogin": "Log in to the app",
       "appLoginHint": "Generate a code and enter it in the app to sign in — no email needed.",
       "appLoginGenerate": "Generate code",
