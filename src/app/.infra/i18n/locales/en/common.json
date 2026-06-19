@@ -212,7 +212,13 @@
       "unlink": "Unlink",
       "noDevices": "No devices",
       "loading": "Loading…",
-      "loadError": "Couldn't load account data."
+      "loadError": "Couldn't load account data.",
+      "appLogin": "Log in to the app",
+      "appLoginHint": "Generate a code and enter it in the app to sign in — no email needed.",
+      "appLoginGenerate": "Generate code",
+      "appLoginRegenerate": "New code",
+      "appLoginWait": "Generating…",
+      "appLoginExpires": "Valid for {{time}}"
     }
   }
 }

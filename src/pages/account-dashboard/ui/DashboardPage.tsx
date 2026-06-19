@@ -48,6 +48,10 @@ export function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [linkCode, setLinkCode] = useState<string | null>(null);
+  const [codeSecondsLeft, setCodeSecondsLeft] = useState(0);
+  const [isGenerating, setIsGenerating] = useState(false);
+
   async function load() {
     setIsLoading(true);
     setError(null);
@@ -88,6 +92,28 @@ export function DashboardPage() {
       await load();
     } catch {
       // игнорируем — список обновится на следующей загрузке
+    }
+  }
+
+  // Тикаем обратный отсчёт кода привязки; на нуле код просто перестаёт показываться.
+  useEffect(() => {
+    if (codeSecondsLeft <= 0) return;
+    const id = setTimeout(() => setCodeSecondsLeft((s) => s - 1), 1000);
+    return () => clearTimeout(id);
+  }, [codeSecondsLeft]);
+
+  async function handleGenerateCode() {
+    setIsGenerating(true);
+    try {
+      const { data } = await apiClient.post<{ code: string; expires_in: number }>(
+        '/api/v2/auth/link-code/create',
+      );
+      setLinkCode(data.code);
+      setCodeSecondsLeft(data.expires_in);
+    } catch {
+      // no-op — пользователь может нажать снова
+    } finally {
+      setIsGenerating(false);
     }
   }
 
@@ -164,6 +190,32 @@ export function DashboardPage() {
           ) : (
             <p className="text-muted-foreground text-sm">{t('account.dashboard.noDevices')}</p>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('account.dashboard.appLogin')}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-muted-foreground text-sm">{t('account.dashboard.appLoginHint')}</p>
+          {linkCode !== null && codeSecondsLeft > 0 && (
+            <div className="space-y-1">
+              <div className="font-mono text-3xl tracking-widest">{linkCode}</div>
+              <p className="text-muted-foreground text-xs">
+                {t('account.dashboard.appLoginExpires', {
+                  time: `${Math.floor(codeSecondsLeft / 60)}:${String(codeSecondsLeft % 60).padStart(2, '0')}`,
+                })}
+              </p>
+            </div>
+          )}
+          <Button disabled={isGenerating} onClick={handleGenerateCode}>
+            {isGenerating
+              ? t('account.dashboard.appLoginWait')
+              : linkCode !== null && codeSecondsLeft > 0
+                ? t('account.dashboard.appLoginRegenerate')
+                : t('account.dashboard.appLoginGenerate')}
+          </Button>
         </CardContent>
       </Card>
     </div>
