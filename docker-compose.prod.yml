@@ -5,6 +5,10 @@ services:
     restart: unless-stopped
     ports:
       - "5391:5391"
+    # Секреты релея почты (SMTP_*, RELAY_SECRET) лежат в /opt/vpn-website/.env.prod
+    # на самом VPS — как в ATM. В git не коммитятся.
+    env_file:
+      - .env.prod
     environment:
       NODE_ENV: production
       PORT: 5391
