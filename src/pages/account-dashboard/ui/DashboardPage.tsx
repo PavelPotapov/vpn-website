@@ -9,10 +9,14 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 
+import { IdentitiesCard } from './IdentitiesCard';
+
 interface Me {
   user_id: string;
   tier: string;
   plan?: string;
+  email?: string;
+  telegram_username?: string;
 }
 
 interface Plan {
@@ -264,6 +268,12 @@ export function DashboardPage() {
           </Button>
         </CardContent>
       </Card>
+
+      <IdentitiesCard
+        email={me?.email}
+        telegramUsername={me?.telegram_username}
+        onChanged={() => void load()}
+      />
 
       <Card>
         <CardHeader>

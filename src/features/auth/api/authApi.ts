@@ -41,3 +41,27 @@ export async function logoutAll(): Promise<void> {
 export async function deleteAccount(): Promise<void> {
   await apiClient.delete('/api/v2/me');
 }
+
+// ── Привязка identity к текущему аккаунту ──
+
+/** Привязка почты, шаг 1: код на новый email. */
+export async function emailLinkStart(email: string): Promise<void> {
+  await apiClient.post('/api/v2/identities/email/link/start', { email });
+}
+
+/** Привязка почты, шаг 2: код из письма. Возвращает status: linked|already|merged. */
+export async function emailLinkVerify(code: string): Promise<{ status: string }> {
+  const { data } = await apiClient.post<{ status: string }>(
+    '/api/v2/identities/email/link/verify',
+    { code },
+  );
+  return data;
+}
+
+/** Привязка Telegram: deep-link на бота, привязанный к текущему аккаунту. */
+export async function telegramLinkStart(): Promise<{ bot_link: string }> {
+  const { data } = await apiClient.post<{ bot_link: string }>(
+    '/api/v2/identities/telegram/link/start',
+  );
+  return data;
+}

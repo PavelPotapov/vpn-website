@@ -226,6 +226,23 @@
       "deleteConfirm": "Your account, subscription and access will be permanently deleted. This can't be undone.",
       "deleteYes": "Yes, delete",
       "cancel": "Cancel"
+    },
+    "identities": {
+      "title": "Login methods",
+      "email": "Email",
+      "notLinked": "not linked",
+      "link": "Link",
+      "refresh": "Refresh",
+      "tgHint": "Open the bot, confirm there, then tap Refresh.",
+      "sendCode": "Send code",
+      "code": "Code from the email",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "emailInvalid": "Enter a valid email address.",
+      "emailTaken": "This email belongs to another account.",
+      "collision": "Both accounts have an active subscription — contact support to merge.",
+      "codeError": "Invalid or expired code.",
+      "error": "Something went wrong. Please try again."
     }
   }
 }
