@@ -10,5 +10,12 @@ dist/
 
 *.tsbuildinfo
 
+# Generated JS from TS config files
+react-router.config.js
+vitest.config.js
+
 .DS_Store
 Thumbs.db
+
+# Agent pipeline artifacts (research/design/plan + temp specs) — not committed
+.agents/
