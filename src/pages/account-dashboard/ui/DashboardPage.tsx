@@ -10,6 +10,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 
 import { IdentitiesCard } from './IdentitiesCard';
+import { RedeemCodeCard } from './RedeemCodeCard';
 
 interface Me {
   user_id: string;
@@ -209,6 +210,8 @@ export function DashboardPage() {
           )}
         </CardContent>
       </Card>
+
+      <RedeemCodeCard onChanged={() => void load()} />
 
       <Card>
         <CardHeader>
