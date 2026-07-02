@@ -230,6 +230,7 @@
       "redeemErrUsed": "This code has already been used.",
       "redeemErrInvalid": "This code is expired or not valid.",
       "redeemErrGeneric": "Couldn't activate the code. Try again later.",
+      "expiresSoon": "Your subscription expires in about {{hours}} h — activate a code to extend it.",
       "dangerZone": "Danger zone",
       "logoutAll": "Log out everywhere",
       "deleteAccount": "Delete account",

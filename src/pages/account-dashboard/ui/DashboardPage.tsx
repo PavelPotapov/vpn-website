@@ -181,6 +181,15 @@ export function DashboardPage() {
   const planName = subscription?.plan?.name ?? me?.plan ?? 'Free';
   const isActive = subscription?.status === 'active';
 
+  // Soft expiry banner: mirrors the backend's 24h warning window.
+  let expiresSoonHours: number | null = null;
+  if (isActive && subscription?.expires_at) {
+    const msLeft = new Date(subscription.expires_at).getTime() - Date.now();
+    if (msLeft > 0 && msLeft < 24 * 60 * 60 * 1000) {
+      expiresSoonHours = Math.max(1, Math.ceil(msLeft / (60 * 60 * 1000)));
+    }
+  }
+
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4 md:p-8">
       <Card>
@@ -206,6 +215,11 @@ export function DashboardPage() {
               {t('account.dashboard.validUntil', {
                 date: new Date(subscription.expires_at).toLocaleDateString(),
               })}
+            </p>
+          )}
+          {expiresSoonHours !== null && (
+            <p className="text-sm font-medium text-amber-500">
+              {t('account.dashboard.expiresSoon', { hours: expiresSoonHours })}
             </p>
           )}
         </CardContent>
